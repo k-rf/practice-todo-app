@@ -1,0 +1,75 @@
+version: "3.9"
+
+networks:
+  todo:
+    external: true
+
+volumes:
+  web-bash_history:
+  web-vscode_extensions:
+  web-node_modules:
+
+  app-bash_history:
+  app-vscode_server:
+  app-node_modules:
+
+services:
+  web:
+    build:
+      context: ./web/.devcontainer
+      args:
+        - USER=web
+    ports:
+      - 3000:3000
+    # environment:
+    working_dir: /workspaces/web
+    user: web
+    entrypoint: yarn
+    command: dev
+    tty: true
+    depends_on:
+      - app
+    networks:
+      - todo
+    volumes:
+      - type: bind
+        source: .
+        target: /workspaces
+      - type: volume
+        source: web-bash_history
+        target: /commandhistory
+      - type: volume
+        source: web-node_modules
+        target: /workspaces/web/node_modules
+      - type: volume
+        source: web-vscode_extensions
+        target: /home/web/.vscode-server/extensions
+
+  app:
+    build:
+      context: ./app/.devcontainer
+      args:
+        - USER=app
+    ports:
+      - 8080:8080
+    # environment:
+    working_dir: /workspaces/app
+    user: app
+    entrypoint: yarn
+    command: start:dev
+    tty: true
+    networks:
+      - todo
+    volumes:
+      - type: bind
+        source: .
+        target: /workspaces
+      - type: volume
+        source: app-bash_history
+        target: /commandhistory
+      - type: volume
+        source: app-node_modules
+        target: /workspaces/app/node_modules
+      - type: volume
+        source: app-vscode_server
+        target: /home/app/.vscode-server
