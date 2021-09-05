@@ -10,7 +10,7 @@ volumes:
   web-node_modules:
 
   app-bash_history:
-  app-vscode_server:
+  app-vscode_extensions:
   app-node_modules:
 
 services:
@@ -71,5 +71,5 @@ services:
         source: app-node_modules
         target: /workspaces/app/node_modules
       - type: volume
-        source: app-vscode_server
-        target: /home/app/.vscode-server
+        source: app-vscode_extensions
+        target: /home/app/.vscode-server/extensions
