@@ -19,13 +19,16 @@
         "test:cov": "jest --coverage",
         "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
         "test:e2e": "jest --config ./test/jest-e2e.config.ts",
-        "test:script": "jest --config ./script/jest-script.config.ts"
+        "test:script": "jest --config ./script/jest-script.config.ts",
+        "test:all": "npm-run-all -s test test:e2e"
     },
     "dependencies": {
         "@nestjs/common": "^8.0.0",
         "@nestjs/core": "^8.0.0",
         "@nestjs/mapped-types": "*",
         "@nestjs/platform-express": "^8.0.0",
+        "class-transformer": "^0.4.0",
+        "class-validator": "^0.13.1",
         "reflect-metadata": "^0.1.13",
         "rimraf": "^3.0.2",
         "rxjs": "^7.2.0",

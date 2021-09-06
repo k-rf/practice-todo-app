@@ -1,4 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
+import { plainToClass } from "class-transformer";
 import { UtilsModule } from "utils/utils.module";
 import { UUIDGenerator } from "utils/uuid-generator";
 import { CreateTodoDto } from "./dto/create-todo.dto";
@@ -33,7 +34,7 @@ describe("TodoService", () => {
     describe("create メソッド", () => {
         it("TODO を作成する", async () => {
             const createdAt = new Date();
-            const createTodoDto = new CreateTodoDto({
+            const createTodoDto = plainToClass(CreateTodoDto, {
                 title: "abc",
                 description: "xyz",
                 createdAt,

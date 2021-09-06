@@ -1,3 +1,5 @@
+import { DomainException } from "utils/exception/domain.exception";
+
 export class TodoTitle {
     readonly value: string;
 
@@ -17,7 +19,7 @@ export class TodoTitle {
 
     private validate(value: string) {
         if (value === "") {
-            throw new Error("Empty is not allowed.");
+            throw new DomainException("Empty is not allowed.");
         }
     }
 }

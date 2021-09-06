@@ -39,7 +39,7 @@ export class TodoService {
     }
 
     findAll() {
-        return `This action returns all todo`;
+        return this.repository.value;
     }
 
     findOne(id: number) {
