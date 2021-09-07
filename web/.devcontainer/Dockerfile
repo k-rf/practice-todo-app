@@ -10,6 +10,9 @@ RUN useradd -m ${USER} -u 1000 -s /bin/bash
 
 WORKDIR /home/${USER}
 
+RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
+    && apt-get -y install --no-install-recommends fonts-firacode
+
 RUN SNIPPET="export PROMPT_COMMAND='history -a' && export HISTFILE=/commandhistory/.bash_history" \
     && mkdir -p /commandhistory /home/${USER}/.vscode-server/extensions ${WORKSPACES}/node_modules \
     && touch /commandhistory/.bash_history \

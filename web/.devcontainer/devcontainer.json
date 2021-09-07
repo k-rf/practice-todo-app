@@ -6,6 +6,7 @@
     "workspaceFolder": "/workspaces/web",
     "remoteUser": "web",
     "overrideCommand": true,
+    "shutdownAction": "none",
     "extensions": [
         "eamodio.gitlens",
         "mhutchie.git-graph",
@@ -13,6 +14,17 @@
         "mutantdino.resourcemonitor",
         "esbenp.prettier-vscode",
         "dbaeumer.vscode-eslint",
-        "orta.vscode-jest",
-    ]
+        "orta.vscode-jest"
+    ],
+    "settings": {
+        "[typescript]": {
+            "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[typescriptreact]": {
+            "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[javascript]": {
+            "editor.defaultFormatter": "esbenp.prettier-vscode"
+        }
+    }
 }
