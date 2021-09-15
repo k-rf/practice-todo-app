@@ -12,8 +12,6 @@ export default defineConfig(async () => {
         }),
     );
 
-    console.log(alias);
-
     return {
         plugins: [reactRefresh(), reactJsx()],
         server: { host: "0.0.0.0", port: 8080 },
