@@ -56,7 +56,7 @@ services:
         working_dir: /workspaces/app
         user: app
         entrypoint: yarn
-        command: start
+        command: start:dev
         tty: true
         networks:
             - todo
