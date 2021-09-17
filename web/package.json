@@ -18,6 +18,7 @@
     "class-validator": "^0.13.1",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
+    "react-hook-form": "^7.15.3",
     "recoil": "^0.4.1",
     "reflect-metadata": "^0.1.13",
     "swr": "^1.0.0"
