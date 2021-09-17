@@ -6,6 +6,7 @@
     "workspaceFolder": "/workspaces/app",
     "remoteUser": "app",
     "overrideCommand": true,
+    "shutdownAction": "none",
     "extensions": [
         "eamodio.gitlens",
         "mhutchie.git-graph",
