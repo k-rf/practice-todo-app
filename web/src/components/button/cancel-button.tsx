@@ -1,18 +1,8 @@
-import { Button } from "@material-ui/core";
+import { Button, ButtonProps } from "@material-ui/core";
 
-interface Props {
-    onClose: () => void;
-}
-
-export const CancelButton = (props: Props) => {
+export const CancelButton = (props: ButtonProps) => {
     return (
-        <Button
-            color="default"
-            variant="outlined"
-            onClick={() => {
-                props.onClose();
-            }}
-        >
+        <Button color="default" variant="outlined" {...props}>
             キャンセル
         </Button>
     );

@@ -1,18 +1,8 @@
-import { Button } from "@material-ui/core";
+import { Button, ButtonProps } from "@material-ui/core";
 
-interface Props {
-    onClose: () => void;
-}
-
-export const SaveButton = (props: Props) => {
+export const SaveButton = (props: ButtonProps) => {
     return (
-        <Button
-            color="primary"
-            variant="outlined"
-            onClick={() => {
-                props.onClose();
-            }}
-        >
+        <Button color="primary" variant="outlined" {...props}>
             保存する
         </Button>
     );
