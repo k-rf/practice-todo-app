@@ -1,15 +1,13 @@
-import { Fab } from "@material-ui/core";
+import { Fab, FabProps } from "@material-ui/core";
 import { Edit } from "@material-ui/icons";
-import { MouseEventHandler } from "react";
 
-interface Props {
-    onClick?: MouseEventHandler<HTMLButtonElement> | undefined;
-}
+export type Props = Omit<FabProps, "children">;
 
 export const CreateFab = (props: Props) => {
     return (
         <Fab
-            style={{ margin: 8, position: "fixed" }}
+            classes={props.classes}
+            className={props.className}
             color="secondary"
             onClick={props.onClick}
         >

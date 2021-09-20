@@ -10,7 +10,8 @@ import {
 import { CancelButton } from "components/button/cancel-button";
 import { SaveButton } from "components/button/save-button";
 import { MouseEventHandler } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
+import { useTodoCollection } from "../hooks/use-todo-collection";
 
 const useStyles = makeStyles((theme) => ({
     field: {
@@ -31,17 +32,21 @@ interface Props {
 export const TodoCreateDialog = (props: Props) => {
     const classes = useStyles();
 
+    const { action } = useTodoCollection();
     const { handleSubmit, register, reset } = useForm<Inputs>();
 
-    const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
-    const defaultValues = { title: "", description: "" };
+    const handleClose = () => {
+        reset({ title: "", description: "" });
+        props.onClose();
+    };
 
     const handleSave: MouseEventHandler<HTMLButtonElement> | undefined = (
         e,
     ) => {
-        handleSubmit(onSubmit)(e);
-        reset(defaultValues);
-        props.onClose();
+        handleSubmit((data) => {
+            action.create({ ...data });
+        })(e);
+        handleClose();
     };
 
     return (
@@ -49,7 +54,7 @@ export const TodoCreateDialog = (props: Props) => {
             open={props.open}
             onClose={(_, reason) => {
                 if (reason === "escapeKeyDown") {
-                    props.onClose();
+                    handleClose();
                 }
             }}
         >
@@ -74,7 +79,7 @@ export const TodoCreateDialog = (props: Props) => {
                     />
                 </DialogContentText>
                 <DialogActions>
-                    <CancelButton onClick={props.onClose} />
+                    <CancelButton onClick={handleClose} />
                     <SaveButton onClick={handleSave} />
                 </DialogActions>
             </DialogContent>

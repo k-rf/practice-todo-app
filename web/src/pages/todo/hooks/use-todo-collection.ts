@@ -1,24 +1,40 @@
-import { plainToClass } from "class-transformer";
-import useSWR from "swr";
+import { useCallback } from "react";
+import { atom, useRecoilState } from "recoil";
+import { TodoApiAdapter } from "../api-adapter/todo-api-adapter";
 import { TodoCollection } from "../model/todo-collection";
 
+const todoCollectionState = atom<TodoCollection>({
+    key: "todoCollectionState",
+    default: new TodoCollection(),
+});
+
 export const useTodoCollection = () => {
-    const { data, error, mutate } = useSWR<TodoCollection>(
-        import.meta.env.VITE_BASE_URI + "/todo",
-        (uri: string) =>
-            fetch(uri)
-                .then((res) => res.json())
-                .then((data) =>
-                    plainToClass(TodoCollection, {
-                        value: data,
-                    }),
-                ),
+    const [todoCollection, setTodoCollection] =
+        useRecoilState(todoCollectionState);
+
+    const findAll = useCallback(async () => {
+        const result = await new TodoApiAdapter().findAll();
+
+        setTodoCollection(result);
+    }, [setTodoCollection]);
+
+    const create = useCallback(
+        async (props: { title: string; description: string }) => {
+            const result = await new TodoApiAdapter().create({
+                ...props,
+                createdAt: new Date(),
+            });
+
+            setTodoCollection((old) => old.append(result));
+        },
+        [setTodoCollection],
     );
 
     return {
-        todoCollection: data ?? new TodoCollection(),
-        isLoading: !error && !data,
-        isError: error,
-        mutate,
+        state: todoCollection,
+        action: {
+            findAll,
+            create,
+        },
     };
 };
