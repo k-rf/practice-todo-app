@@ -39,7 +39,12 @@ export class TodoService {
     }
 
     findAll() {
-        return this.repository.value;
+        return this.repository.value.map((todo) => ({
+            id: String(todo.id),
+            title: String(todo.title),
+            description: String(todo.description),
+            createdAt: todo.createdAt,
+        }));
     }
 
     findOne(id: number) {
