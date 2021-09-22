@@ -2,7 +2,7 @@ import { plainToClass } from "class-transformer";
 import { Todo } from "../model/todo";
 import { TodoCollection } from "../model/todo-collection";
 
-const baseUri = import.meta.env.VITE_BASE_URI;
+const baseUri = import.meta.env.VITE_BASE_URI ?? process.env.BASE_URI;
 
 namespace CreateTodo {
     export interface Request {
