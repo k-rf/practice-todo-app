@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { atom, useRecoilState } from "recoil";
 import { TodoApiAdapter } from "../api-adapter/todo-api-adapter";
 import { TodoCollection } from "../model/todo-collection";
@@ -32,9 +32,12 @@ export const useTodoCollection = () => {
 
     return {
         state: todoCollection,
-        action: {
-            findAll,
-            create,
-        },
+        action: useMemo(
+            () => ({
+                findAll,
+                create,
+            }),
+            [findAll, create],
+        ),
     };
 };

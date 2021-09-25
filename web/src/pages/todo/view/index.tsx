@@ -1,4 +1,4 @@
-import { CircularProgress, Container, Grid } from "@mui/material";
+import { Box, CircularProgress, Container, Grid } from "@mui/material";
 import { SxProps, Theme } from "@mui/system";
 import { useLoading } from "hooks/use-loading";
 import { useTodoCollection } from "../hooks/use-todo-collection";
@@ -7,6 +7,11 @@ import { TodoCreateDialogFab } from "./todo-create-dialog-fab";
 
 const styles: SxProps<Theme> = {
     position: "fixed",
+};
+
+const progressStyles: SxProps<Theme> = {
+    display: "flex",
+    justifyContent: "center",
 };
 
 export const Todo = () => {
@@ -21,7 +26,9 @@ export const Todo = () => {
                 </Grid>
                 <Grid item xs>
                     {isLoading ? (
-                        <CircularProgress size={500} />
+                        <Box sx={progressStyles}>
+                            <CircularProgress size={56} />
+                        </Box>
                     ) : (
                         state.value.map((e) => (
                             <TodoAccordion key={e.id} {...e} />

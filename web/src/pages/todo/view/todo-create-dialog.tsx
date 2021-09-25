@@ -8,8 +8,9 @@ import {
 } from "@mui/material";
 import { CancelButton } from "components/button/cancel-button";
 import { SaveButton } from "components/button/save-button";
+import { useSnackbar } from "hooks/use-snackbar";
 import { MouseEventHandler } from "react";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { useTodoCollection } from "../hooks/use-todo-collection";
 import { FormValues, TodoCreateForm } from "./form/todo-create-form";
 
@@ -20,6 +21,7 @@ interface Props {
 
 export const TodoCreateDialog = (props: Props) => {
     const { action } = useTodoCollection();
+    const { action: snackbarAction } = useSnackbar();
     const { handleSubmit, reset, control, formState } = useForm<FormValues>({
         mode: "all",
     });
@@ -29,8 +31,17 @@ export const TodoCreateDialog = (props: Props) => {
         props.onClose();
     };
 
-    const onSubmit = (data: FormValues) => {
-        action.create({ ...data });
+    const onSubmit: SubmitHandler<FormValues> = (data) => {
+        action
+            .create({ ...data })
+            .then(() => {
+                snackbarAction.success(`Todo を作成しました`);
+            })
+            .catch((e) => {
+                if (e instanceof Error) {
+                    snackbarAction.alert(e.message);
+                }
+            });
         onClose();
     };
 
