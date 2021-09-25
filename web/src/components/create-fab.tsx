@@ -1,16 +1,11 @@
-import { Fab, FabProps } from "@material-ui/core";
-import { Edit } from "@material-ui/icons";
+import { Edit } from "@mui/icons-material";
+import { Fab, FabProps } from "@mui/material";
 
-export type Props = Omit<FabProps, "children">;
+export type CreateFabProps = Omit<FabProps, "children">;
 
-export const CreateFab = (props: Props) => {
+export const CreateFab = (props: CreateFabProps) => {
     return (
-        <Fab
-            classes={props.classes}
-            className={props.className}
-            color="secondary"
-            onClick={props.onClick}
-        >
+        <Fab {...props} color="secondary" onClick={props.onClick}>
             <Edit fontSize="large" />
         </Fab>
     );

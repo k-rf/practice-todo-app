@@ -1,24 +1,19 @@
-import { AppBar, makeStyles, Toolbar, Typography } from "@material-ui/core";
+import { AppBar, Toolbar, Typography } from "@mui/material";
+import { SxProps, Theme } from "@mui/system";
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        marginBottom: theme.spacing(2),
-    },
-    colorTransparent: {
-        backgroundColor: "#00000080",
-        color: "antiquewhite",
-    },
-}));
+const styles: SxProps<Theme> = {
+    backgroundColor: "#00000080",
+    color: "antiquewhite",
+    marginBottom: (theme) => theme.spacing(2),
+};
 
-interface Props {
+interface HeaderProps {
     title: string;
 }
 
-export const Header = (props: Props) => {
-    const classes = useStyles();
-
+export const Header = (props: HeaderProps) => {
     return (
-        <AppBar position="sticky" color="transparent" classes={classes}>
+        <AppBar position="sticky" color="transparent" sx={styles}>
             <Toolbar>
                 <Typography variant="h4">{props.title}</Typography>
             </Toolbar>

@@ -1,8 +1,8 @@
-import { CreateFab, Props } from "components/create-fab";
+import { CreateFab, CreateFabProps } from "components/create-fab";
 import { useState } from "react";
 import { TodoCreateDialog } from "./todo-create-dialog";
 
-export const TodoCreateDialogFab = (props: Props) => {
+export const TodoCreateDialogFab = (props: CreateFabProps) => {
     const [opened, setOpened] = useState(false);
 
     const handleOpen = () => {
@@ -15,11 +15,7 @@ export const TodoCreateDialogFab = (props: Props) => {
 
     return (
         <>
-            <CreateFab
-                classes={props.classes}
-                className={props.className}
-                onClick={() => handleOpen()}
-            />
+            <CreateFab {...props} onClick={() => handleOpen()} />
             <TodoCreateDialog open={opened} onClose={handelClose} />
         </>
     );

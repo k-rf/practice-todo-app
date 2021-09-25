@@ -4,20 +4,18 @@ import {
     DialogContent,
     DialogContentText,
     DialogTitle,
-    makeStyles,
     TextField,
-} from "@material-ui/core";
+} from "@mui/material";
+import { SxProps, Theme } from "@mui/system";
 import { CancelButton } from "components/button/cancel-button";
 import { SaveButton } from "components/button/save-button";
 import { MouseEventHandler } from "react";
 import { useForm } from "react-hook-form";
 import { useTodoCollection } from "../hooks/use-todo-collection";
 
-const useStyles = makeStyles((theme) => ({
-    field: {
-        marginBottom: theme.spacing(2),
-    },
-}));
+const fieldStyles: SxProps<Theme> = {
+    marginBottom: (theme) => theme.spacing(2),
+};
 
 interface Inputs {
     title: string;
@@ -30,8 +28,6 @@ interface Props {
 }
 
 export const TodoCreateDialog = (props: Props) => {
-    const classes = useStyles();
-
     const { action } = useTodoCollection();
     const { handleSubmit, register, reset } = useForm<Inputs>();
 
@@ -60,21 +56,21 @@ export const TodoCreateDialog = (props: Props) => {
         >
             <DialogTitle>Todo を追加する</DialogTitle>
             <DialogContent>
-                <DialogContentText>
+                <DialogContentText sx={{ p: (theme) => theme.spacing(1) }}>
                     <TextField
-                        className={classes.field}
                         label="タイトル"
                         fullWidth
                         variant="outlined"
+                        sx={fieldStyles}
                         {...register("title")}
                     />
                     <TextField
-                        className={classes.field}
                         label="詳細"
                         multiline
                         minRows={2}
                         fullWidth
                         variant="outlined"
+                        sx={fieldStyles}
                         {...register("description")}
                     />
                 </DialogContentText>
