@@ -6,12 +6,9 @@ import {
     Typography,
 } from "@mui/material";
 import { SxProps, Theme } from "@mui/system";
-import { FC } from "react";
 
 const styles: SxProps<Theme> = {
-    details: {
-        display: "block",
-    },
+    display: "block",
 };
 
 interface Props {
@@ -20,7 +17,7 @@ interface Props {
     createdAt: Date;
 }
 
-export const TodoAccordion: FC<Props> = (props) => {
+export const TodoAccordion = (props: Props) => {
     return (
         <Accordion>
             <AccordionSummary expandIcon={<ExpandMore />}>
