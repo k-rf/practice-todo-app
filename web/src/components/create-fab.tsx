@@ -5,7 +5,7 @@ export type CreateFabProps = Omit<FabProps, "children">;
 
 export const CreateFab = (props: CreateFabProps) => {
     return (
-        <Fab {...props} color="secondary" onClick={props.onClick}>
+        <Fab {...props} color="secondary">
             <Edit fontSize="large" />
         </Fab>
     );

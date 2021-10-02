@@ -3,6 +3,15 @@ import { atom, useRecoilState } from "recoil";
 import { TodoApiAdapter } from "../api-adapter/todo-api-adapter";
 import { TodoCollection } from "../model/todo-collection";
 
+interface CreateProps {
+    title: string;
+    description: string;
+}
+
+interface RemoveProps {
+    id: string;
+}
+
 const todoCollectionState = atom<TodoCollection>({
     key: "todoCollectionState",
     default: new TodoCollection(),
@@ -19,7 +28,7 @@ export const useTodoCollection = () => {
     }, [setTodoCollection]);
 
     const create = useCallback(
-        async (props: { title: string; description: string }) => {
+        async (props: CreateProps) => {
             const result = await new TodoApiAdapter().create({
                 ...props,
                 createdAt: new Date(),
@@ -30,14 +39,25 @@ export const useTodoCollection = () => {
         [setTodoCollection],
     );
 
+    const remove = useCallback(
+        async (props: RemoveProps) => {
+            await new TodoApiAdapter().remove({
+                ...props,
+            });
+            setTodoCollection((old) => old.remove(props.id));
+        },
+        [setTodoCollection],
+    );
+
     return {
         state: todoCollection,
         action: useMemo(
             () => ({
                 findAll,
                 create,
+                remove,
             }),
-            [findAll, create],
+            [findAll, create, remove],
         ),
     };
 };

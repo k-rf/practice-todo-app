@@ -17,9 +17,15 @@ namespace CreateTodo {
     }
 }
 
+namespace RemoveTodo {
+    export interface Request {
+        id: string;
+    }
+}
+
 export class TodoApiAdapter {
     async findAll() {
-        const result = await timeoutFetch(baseUri + "/todo");
+        const result = await timeoutFetch(`${baseUri}/todo`);
 
         if (isOk(result)) {
             const data = await result.json();
@@ -30,7 +36,7 @@ export class TodoApiAdapter {
     }
 
     async create(value: CreateTodo.Request) {
-        const result = await timeoutFetch(baseUri + "/todo", {
+        const result = await timeoutFetch(`${baseUri}/todo`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -43,6 +49,19 @@ export class TodoApiAdapter {
             return plainToClass(Todo, { ...value, ...data });
         } else {
             throw new Error(`Todo の作成に失敗しました`);
+        }
+    }
+
+    async remove(value: RemoveTodo.Request) {
+        const result = await timeoutFetch(`${baseUri}/todo/${value.id}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (!isOk(result)) {
+            throw new Error(`Todo の削除に失敗しました`);
         }
     }
 }

@@ -12,4 +12,8 @@ export class TodoCollection {
     append(value: Todo) {
         return new TodoCollection(this.value.concat(value));
     }
+
+    remove(value: string) {
+        return new TodoCollection(this.value.filter((e) => e.id !== value));
+    }
 }
