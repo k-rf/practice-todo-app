@@ -8,6 +8,7 @@ import {
 } from "@mui/material";
 import { SxProps, Theme } from "@mui/system";
 import { RemoveIconButton } from "components/remove-icon-button";
+import { useSnackbar } from "hooks/use-snackbar";
 import { useTodoCollection } from "../hooks/use-todo-collection";
 
 const styles: SxProps<Theme> = {
@@ -23,6 +24,20 @@ interface Props {
 
 export const TodoAccordion = (props: Props) => {
     const { action } = useTodoCollection();
+    const { action: snackbarAction } = useSnackbar();
+
+    const handleRemove = () => {
+        action
+            .remove({ id: props.id })
+            .then(() => {
+                snackbarAction.success(`Todo を削除しました`);
+            })
+            .catch((e) => {
+                if (e instanceof Error) {
+                    snackbarAction.alert(e.message);
+                }
+            });
+    };
 
     return (
         <Accordion>
@@ -34,9 +49,7 @@ export const TodoAccordion = (props: Props) => {
                 <Typography>{String(props.createdAt)}</Typography>
             </AccordionDetails>
             <AccordionActions>
-                <RemoveIconButton
-                    onClick={() => action.remove({ id: props.id })}
-                />
+                <RemoveIconButton onClick={handleRemove} />
             </AccordionActions>
         </Accordion>
     );
