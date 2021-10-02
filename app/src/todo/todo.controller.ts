@@ -3,6 +3,7 @@ import {
     Controller,
     Delete,
     Get,
+    NotFoundException,
     Param,
     Post,
     Res,
@@ -11,12 +12,16 @@ import {
     ValidationPipe,
 } from "@nestjs/common";
 import { Response } from "express";
+import { InfrastructureException } from "utils/exception/infrastructure.exception";
 import { DomainExceptionFilter } from "utils/filter/domain-exception.filter";
+import { InfrastructureExceptionFilter } from "utils/filter/infrastructure-exception.filter";
+import { UUID } from "utils/uuid";
 import { CreateTodoDto } from "./dto/create-todo.dto";
 import { TodoService } from "./todo.service";
 
 @Controller("todo")
 @UseFilters(DomainExceptionFilter)
+@UseFilters(InfrastructureExceptionFilter)
 export class TodoController {
     constructor(private readonly todoService: TodoService) {}
 
@@ -39,7 +44,16 @@ export class TodoController {
     }
 
     @Delete(":id")
-    remove(@Param("id") id: string) {
-        return this.todoService.remove(+id);
+    async remove(@Param("id") id: UUID) {
+        try {
+            await this.todoService.remove(id);
+        } catch (e) {
+            if (e instanceof InfrastructureException) {
+                // Todo: 例外処理の方法を調べる
+                throw new NotFoundException();
+            } else {
+                throw e;
+            }
+        }
     }
 }

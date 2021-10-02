@@ -8,6 +8,7 @@ import { TodoTitle } from "todo/entities/todo-title";
 import { Todo } from "todo/entities/todo.entity";
 import { TodoInMemoryRepository } from "todo/repository/in-memory/todo-in-memory-repository";
 import { TodoModule } from "todo/todo.module";
+import { UUID } from "utils/uuid";
 import { UUIDGenerator } from "utils/uuid-generator";
 
 describe("TodoController (e2e)", () => {
@@ -99,6 +100,38 @@ describe("TodoController (e2e)", () => {
                             error: "Bad Request",
                         });
                     });
+            });
+        });
+    });
+
+    describe("TODO を削除する (DELETE /todo/:id)", () => {
+        it("正常な値を与える", async () => {
+            const dto = {
+                title: "abc",
+                description: "xyz",
+                createdAt: new Date(),
+            };
+
+            const response = await request(app.getHttpServer())
+                .post("/todo")
+                .send(dto);
+            const id = response.body.id;
+
+            return request(app.getHttpServer())
+                .delete(`/todo/${String(id)}`)
+                .expect(200)
+                .expect(() => {
+                    expect(repository.value.length).toEqual(0);
+                });
+        });
+
+        describe("不正な値を与える", () => {
+            it("存在しない ID を与えると Bad Request が発生する", () => {
+                const id = new UUID();
+
+                return request(app.getHttpServer())
+                    .delete(`/todo/${String(id)}`)
+                    .expect(404);
             });
         });
     });

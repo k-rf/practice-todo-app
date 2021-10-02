@@ -53,6 +53,27 @@ describe("TodoService", () => {
         });
     });
 
+    describe("remove メソッド", () => {
+        beforeEach(async () => {
+            const createdAt = new Date();
+            const createTodoDto = plainToClass(CreateTodoDto, {
+                title: "abc",
+                description: "xyz",
+                createdAt,
+            });
+
+            await service.create(createTodoDto);
+        });
+
+        it("TODO を削除する", async () => {
+            const id = new TodoId(generator.lastGenerated());
+
+            await service.remove(id);
+
+            expect(repository.value.length).toEqual(0);
+        });
+    });
+
     describe("complete メソッド", () => {
         it.todo("TODO を「完了」状態にする");
     });

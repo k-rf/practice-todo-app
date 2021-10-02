@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import { UUID } from "utils/uuid";
 import { UUIDGenerator } from "utils/uuid-generator";
 import { CreateTodoDto } from "./dto/create-todo.dto";
 import { TodoCreatedDate } from "./entities/todo-created-date";
@@ -51,7 +52,7 @@ export class TodoService {
         return `This action returns a #${id} todo`;
     }
 
-    remove(id: number) {
-        return `This action removes a #${id} todo`;
+    async remove(id: UUID) {
+        await this.repository.remove(new TodoId(id));
     }
 }
