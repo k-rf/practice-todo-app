@@ -63,7 +63,7 @@ describe("TodoController (e2e)", () => {
         });
 
         describe("不正な値を与える", () => {
-            it("Domain Exception が発生する", () => {
+            it("条件を満たさない値を含むと Domain Exception が発生する", () => {
                 const dto = {
                     title: "",
                     description: "",
@@ -83,7 +83,7 @@ describe("TodoController (e2e)", () => {
                     });
             });
 
-            it("Bad Request が発生する", () => {
+            it("欠損値があると Bad Request が発生する", () => {
                 const dto = {
                     title: "abc",
                     description: "",
