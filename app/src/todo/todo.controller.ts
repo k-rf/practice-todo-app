@@ -6,16 +6,20 @@ import {
     NotFoundException,
     Param,
     Post,
+    Put,
     Res,
     UseFilters,
     UsePipes,
     ValidationPipe,
 } from "@nestjs/common";
+import { plainToClass } from "class-transformer";
 import { Response } from "express";
 import { InfrastructureException } from "utils/exception/infrastructure.exception";
 import { DomainExceptionFilter } from "utils/filter/domain-exception.filter";
 import { InfrastructureExceptionFilter } from "utils/filter/infrastructure-exception.filter";
+import { ParseUUIDPipe } from "utils/parse-uuid.pipe";
 import { UUID } from "utils/uuid";
+import { ChangeTodoStatusDto } from "./dto/change-todo-status.dto";
 import { CreateTodoDto } from "./dto/create-todo.dto";
 import { TodoService } from "./todo.service";
 
@@ -33,18 +37,44 @@ export class TodoController {
         }).send();
     }
 
+    @Put(":id/status")
+    @UsePipes(new ValidationPipe({ transform: true }))
+    async changeStatus(
+        @Param("id", new ParseUUIDPipe()) id: UUID,
+        @Body() changeTodoStatusDto: ChangeTodoStatusDto,
+        @Res() res: Response,
+    ) {
+        const dto = plainToClass(ChangeTodoStatusDto, {
+            ...changeTodoStatusDto,
+            id,
+        });
+
+        try {
+            res.json({
+                ...(await this.todoService.changeStatus(dto)),
+            }).send();
+        } catch (e) {
+            if (e instanceof InfrastructureException) {
+                // Todo: 例外処理の方法を調べる
+                throw new NotFoundException();
+            } else {
+                throw e;
+            }
+        }
+    }
+
     @Get()
     findAll() {
         return this.todoService.findAll();
     }
 
     @Get(":id")
-    findOne(@Param("id") id: UUID) {
+    findOne(@Param("id", new ParseUUIDPipe()) id: UUID) {
         return this.todoService.findOne(id);
     }
 
     @Delete(":id")
-    async remove(@Param("id") id: UUID) {
+    async remove(@Param("id", new ParseUUIDPipe()) id: UUID) {
         try {
             await this.todoService.remove(id);
         } catch (e) {
