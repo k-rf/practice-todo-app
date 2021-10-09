@@ -53,6 +53,27 @@ describe("TodoService", () => {
         });
     });
 
+    describe("findOne メソッド", () => {
+        beforeEach(async () => {
+            const createdAt = new Date();
+            const createTodoDto = plainToClass(CreateTodoDto, {
+                title: "abc",
+                description: "xyz",
+                createdAt,
+            });
+
+            await service.create(createTodoDto);
+        });
+
+        it("指定した TODO を取得する", async () => {
+            const id = new TodoId(generator.lastGenerated());
+
+            const todo = await service.findOne(id);
+
+            expect(todo.id).toEqual(id);
+        });
+    });
+
     describe("remove メソッド", () => {
         beforeEach(async () => {
             const createdAt = new Date();
