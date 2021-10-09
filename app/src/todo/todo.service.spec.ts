@@ -87,7 +87,7 @@ describe("TodoService", () => {
         });
 
         it("TODO を削除する", async () => {
-            const id = new TodoId(generator.lastGenerated());
+            const id = generator.lastGenerated();
 
             await service.remove(id);
 
