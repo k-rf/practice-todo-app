@@ -2,6 +2,7 @@ import { useCallback, useMemo } from "react";
 import { atom, useRecoilState } from "recoil";
 import { TodoApiAdapter } from "../api-adapter/todo-api-adapter";
 import { TodoCollection } from "../model/todo-collection";
+import { TodoStatus } from "../model/todo-status";
 
 interface CreateProps {
     title: string;
@@ -10,6 +11,11 @@ interface CreateProps {
 
 interface RemoveProps {
     id: string;
+}
+
+interface ChangeStatusProps {
+    id: string;
+    status: TodoStatus;
 }
 
 const todoCollectionState = atom<TodoCollection>({
@@ -41,10 +47,16 @@ export const useTodoCollection = () => {
 
     const remove = useCallback(
         async (props: RemoveProps) => {
-            await new TodoApiAdapter().remove({
-                ...props,
-            });
+            await new TodoApiAdapter().remove(props);
             setTodoCollection((old) => old.remove(props.id));
+        },
+        [setTodoCollection],
+    );
+
+    const changeStatus = useCallback(
+        async (props: ChangeStatusProps) => {
+            const response = await new TodoApiAdapter().changeStatus(props);
+            setTodoCollection((old) => old.update(response));
         },
         [setTodoCollection],
     );
@@ -56,8 +68,9 @@ export const useTodoCollection = () => {
                 findAll,
                 create,
                 remove,
+                changeStatus,
             }),
-            [findAll, create, remove],
+            [findAll, create, remove, changeStatus],
         ),
     };
 };

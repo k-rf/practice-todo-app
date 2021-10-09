@@ -2,6 +2,7 @@ import { plainToClass } from "class-transformer";
 import { Todo } from "../model/todo";
 import { TodoCollection } from "../model/todo-collection";
 import { isOk, timeoutFetch } from "utils/timeout-fetch";
+import { TodoStatus } from "../model/todo-status";
 
 const baseUri = import.meta.env.VITE_BASE_URI ?? process.env.BASE_URI ?? "";
 
@@ -20,6 +21,13 @@ namespace CreateTodo {
 namespace RemoveTodo {
     export interface Request {
         id: string;
+    }
+}
+
+namespace ChangeTodoStatus {
+    export interface Request {
+        id: string;
+        status: TodoStatus;
     }
 }
 
@@ -62,6 +70,26 @@ export class TodoApiAdapter {
 
         if (!isOk(result)) {
             throw new Error(`Todo の削除に失敗しました`);
+        }
+    }
+
+    async changeStatus(value: ChangeTodoStatus.Request) {
+        const result = await timeoutFetch(
+            `${baseUri}/todo/${value.id}/status`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ status: value.status }),
+            },
+        );
+
+        if (isOk(result)) {
+            const data: Todo = await result.json();
+            return plainToClass(Todo, { ...data });
+        } else {
+            throw new Error(`Todo のステータス更新に失敗しました`);
         }
     }
 }
