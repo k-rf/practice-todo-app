@@ -48,7 +48,14 @@ export class TodoService {
 
         await this.repository.save(result);
 
-        return result;
+        return {
+            id: String(result.id),
+            title: String(result.title),
+            description: String(result.description),
+            status: result.status,
+            createdAt: result.createdAt,
+            completedAt: result.completedAt,
+        };
     }
 
     findAll() {
@@ -56,7 +63,9 @@ export class TodoService {
             id: String(todo.id),
             title: String(todo.title),
             description: String(todo.description),
+            status: todo.status,
             createdAt: todo.createdAt,
+            completedAt: todo.completedAt,
         }));
     }
 
