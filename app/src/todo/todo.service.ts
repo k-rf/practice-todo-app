@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { DateGenerator } from "utils/date-generator";
 import { UUID } from "utils/uuid";
 import { UUIDGenerator } from "utils/uuid-generator";
+import { ChangeTodoStatusDto } from "./dto/change-todo-status.dto";
 import { CreateTodoDto } from "./dto/create-todo.dto";
 import { TodoCompletedDate } from "./entities/todo-completed-date";
 import { TodoCreatedDate } from "./entities/todo-created-date";
@@ -34,25 +35,20 @@ export class TodoService {
         return id;
     }
 
-    async done(id: UUID) {
-        const todo = await this.repository.findOne(new TodoId(id));
-        const completedAt = new TodoCompletedDate(
-            this.dateGenerator.generate(),
-        );
+    async changeStatus(changeStatusDto: ChangeTodoStatusDto) {
+        const id = new TodoId(changeStatusDto.id);
+        const todo = await this.repository.findOne(id);
 
-        const doneTodo = todo.done(completedAt);
-        await this.repository.save(doneTodo);
+        const result =
+            changeStatusDto.status === "DONE"
+                ? todo.done(
+                      new TodoCompletedDate(this.dateGenerator.generate()),
+                  )
+                : todo.undone();
 
-        return doneTodo;
-    }
+        await this.repository.save(result);
 
-    async undone(id: UUID) {
-        const todo = await this.repository.findOne(new TodoId(id));
-
-        const undoneTodo = todo.undone();
-        await this.repository.save(undoneTodo);
-
-        return undoneTodo;
+        return result;
     }
 
     findAll() {

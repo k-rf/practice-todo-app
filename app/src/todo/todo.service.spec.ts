@@ -3,6 +3,7 @@ import { plainToClass } from "class-transformer";
 import { DateGenerator } from "utils/date-generator";
 import { UtilsModule } from "utils/utils.module";
 import { UUIDGenerator } from "utils/uuid-generator";
+import { ChangeTodoStatusDto } from "./dto/change-todo-status.dto";
 import { CreateTodoDto } from "./dto/create-todo.dto";
 import { TodoCreatedDate } from "./entities/todo-created-date";
 import { TodoDescription } from "./entities/todo-description";
@@ -99,7 +100,7 @@ describe("TodoService", () => {
         });
     });
 
-    describe("done メソッド", () => {
+    describe("changeStatus メソッド", () => {
         beforeEach(async () => {
             const createdAt = new Date();
             const createTodoDto = plainToClass(CreateTodoDto, {
@@ -114,34 +115,28 @@ describe("TodoService", () => {
         it("TODO を「完了」状態にする", async () => {
             const id = uuidGenerator.lastGenerated();
             const todoId = new TodoId(id);
+            const changeStatusDto = plainToClass(ChangeTodoStatusDto, {
+                id,
+                status: "DONE",
+            });
 
-            const doneTodo = await service.done(id);
+            const doneTodo = await service.changeStatus(changeStatusDto);
             const stored = await repository.findOne(todoId);
 
             expect(stored).toEqual(doneTodo);
             expect(stored.status).toEqual(TODO_STATUS.DONE);
             expect(stored.completedAt).toEqual(dateGenerator.lastGenerated());
         });
-    });
-
-    describe("undone メソッド", () => {
-        beforeEach(async () => {
-            const createdAt = new Date();
-            const createTodoDto = plainToClass(CreateTodoDto, {
-                title: "abc",
-                description: "xyz",
-                createdAt,
-            });
-
-            await service.create(createTodoDto);
-            await service.done(uuidGenerator.lastGenerated());
-        });
 
         it("TODO を「未完了」状態にする", async () => {
             const id = uuidGenerator.lastGenerated();
             const todoId = new TodoId(id);
+            const changeStatusDto = plainToClass(ChangeTodoStatusDto, {
+                id,
+                status: "PENDING",
+            });
 
-            const undoneTodo = await service.undone(id);
+            const undoneTodo = await service.changeStatus(changeStatusDto);
             const stored = await repository.findOne(todoId);
 
             expect(stored).toEqual(undoneTodo);
