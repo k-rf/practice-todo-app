@@ -6,6 +6,16 @@ import { InfrastructureException } from "utils/exception/infrastructure.exceptio
 export class TodoInMemoryRepository implements TodoRepository {
     constructor(readonly value: Todo[] = []) {}
 
+    async findOne(value: TodoId) {
+        const result = this.value.find((e) => e.id.equals(value));
+
+        if (!result) {
+            throw new InfrastructureException(`Specified Todo is not existed.`);
+        }
+
+        return result;
+    }
+
     async save(value: Todo) {
         this.value.push(value);
     }

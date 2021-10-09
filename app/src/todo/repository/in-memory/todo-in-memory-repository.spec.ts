@@ -15,6 +15,32 @@ describe("TodoInMemoryRepository", () => {
         expect(new TodoInMemoryRepository()).toBeDefined();
     });
 
+    describe("findOne メソッド", () => {
+        it("TODO を 1 件取得する", async () => {
+            const id = new TodoId();
+
+            const todo = new Todo({
+                id,
+                title: new TodoTitle("abc"),
+                description: new TodoDescription(""),
+                createdAt: new TodoCreatedDate(),
+            });
+
+            await repository.save(todo);
+            const result = await repository.findOne(id);
+
+            expect(result.id).toEqual(id);
+        });
+
+        it("指定した ID が存在しない場合エラー", async () => {
+            const id = new TodoId();
+
+            expect(repository.findOne(id)).rejects.toThrowError(
+                `Specified Todo is not existed.`,
+            );
+        });
+    });
+
     describe("save メソッド", () => {
         it("TODO を保存する", async () => {
             const todo = new Todo({
