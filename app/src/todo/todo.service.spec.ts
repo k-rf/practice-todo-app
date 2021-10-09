@@ -1,11 +1,13 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { plainToClass } from "class-transformer";
+import { DateGenerator } from "utils/date-generator";
 import { UtilsModule } from "utils/utils.module";
 import { UUIDGenerator } from "utils/uuid-generator";
 import { CreateTodoDto } from "./dto/create-todo.dto";
 import { TodoCreatedDate } from "./entities/todo-created-date";
 import { TodoDescription } from "./entities/todo-description";
 import { TodoId } from "./entities/todo-id";
+import { TODO_STATUS } from "./entities/todo-status";
 import { TodoTitle } from "./entities/todo-title";
 import { Todo } from "./entities/todo.entity";
 import { TodoInMemoryRepository } from "./repository/in-memory/todo-in-memory-repository";
@@ -13,7 +15,8 @@ import { TodoService } from "./todo.service";
 
 describe("TodoService", () => {
     let service: TodoService;
-    let generator: UUIDGenerator;
+    let uuidGenerator: UUIDGenerator;
+    let dateGenerator: DateGenerator;
     let repository: TodoInMemoryRepository;
 
     beforeEach(async () => {
@@ -23,7 +26,8 @@ describe("TodoService", () => {
         }).compile();
 
         service = module.get<TodoService>(TodoService);
-        generator = module.get<UUIDGenerator>(UUIDGenerator);
+        uuidGenerator = module.get<UUIDGenerator>(UUIDGenerator);
+        dateGenerator = module.get<DateGenerator>(DateGenerator);
         repository = module.get<TodoInMemoryRepository>(TodoInMemoryRepository);
     });
 
@@ -43,7 +47,7 @@ describe("TodoService", () => {
             await service.create(createTodoDto);
 
             const todo = new Todo({
-                id: new TodoId(generator.lastGenerated()),
+                id: new TodoId(uuidGenerator.lastGenerated()),
                 title: new TodoTitle("abc"),
                 description: new TodoDescription("xyz"),
                 createdAt: new TodoCreatedDate(createdAt),
@@ -66,7 +70,7 @@ describe("TodoService", () => {
         });
 
         it("指定した TODO を取得する", async () => {
-            const id = new TodoId(generator.lastGenerated());
+            const id = new TodoId(uuidGenerator.lastGenerated());
 
             const todo = await service.findOne(id);
 
@@ -87,7 +91,7 @@ describe("TodoService", () => {
         });
 
         it("TODO を削除する", async () => {
-            const id = generator.lastGenerated();
+            const id = uuidGenerator.lastGenerated();
 
             await service.remove(id);
 
@@ -95,11 +99,54 @@ describe("TodoService", () => {
         });
     });
 
-    describe("complete メソッド", () => {
-        it.todo("TODO を「完了」状態にする");
+    describe("done メソッド", () => {
+        beforeEach(async () => {
+            const createdAt = new Date();
+            const createTodoDto = plainToClass(CreateTodoDto, {
+                title: "abc",
+                description: "xyz",
+                createdAt,
+            });
+
+            await service.create(createTodoDto);
+        });
+
+        it("TODO を「完了」状態にする", async () => {
+            const id = uuidGenerator.lastGenerated();
+            const todoId = new TodoId(id);
+
+            const doneTodo = await service.done(id);
+            const stored = await repository.findOne(todoId);
+
+            expect(stored).toEqual(doneTodo);
+            expect(stored.status).toEqual(TODO_STATUS.DONE);
+            expect(stored.completedAt).toEqual(dateGenerator.lastGenerated());
+        });
     });
 
-    describe("incomplete メソッド", () => {
-        it.todo("TODO を「未完了」状態にする");
+    describe("undone メソッド", () => {
+        beforeEach(async () => {
+            const createdAt = new Date();
+            const createTodoDto = plainToClass(CreateTodoDto, {
+                title: "abc",
+                description: "xyz",
+                createdAt,
+            });
+
+            await service.create(createTodoDto);
+            await service.done(uuidGenerator.lastGenerated());
+        });
+
+        it("TODO を「未完了」状態にする", async () => {
+            const id = uuidGenerator.lastGenerated();
+            const todoId = new TodoId(id);
+
+            const undoneTodo = await service.undone(id);
+            const stored = await repository.findOne(todoId);
+
+            expect(stored).toEqual(undoneTodo);
+            expect(stored.status).toEqual(TODO_STATUS.PENDING);
+            expect(stored.completedAt).toBeUndefined();
+        });
     });
 });

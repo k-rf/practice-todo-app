@@ -6,6 +6,7 @@ describe("UUIDGenerator", () => {
     beforeEach(() => {
         uuidGenerator = new UUIDGenerator();
     });
+
     it("should be defined", () => {
         expect(new UUIDGenerator()).toBeDefined();
     });

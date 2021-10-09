@@ -39,8 +39,8 @@ export class TodoController {
     }
 
     @Get(":id")
-    findOne(@Param("id") id: string) {
-        return this.todoService.findOne(+id);
+    findOne(@Param("id") id: UUID) {
+        return this.todoService.findOne(id);
     }
 
     @Delete(":id")

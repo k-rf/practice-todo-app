@@ -1,7 +1,5 @@
-import { Injectable } from "@nestjs/common";
 import { UUID } from "./uuid";
 
-@Injectable()
 export class UUIDGenerator {
     private _uuid: UUID;
 

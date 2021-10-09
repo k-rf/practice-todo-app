@@ -1,7 +1,9 @@
 import { Injectable } from "@nestjs/common";
+import { DateGenerator } from "utils/date-generator";
 import { UUID } from "utils/uuid";
 import { UUIDGenerator } from "utils/uuid-generator";
 import { CreateTodoDto } from "./dto/create-todo.dto";
+import { TodoCompletedDate } from "./entities/todo-completed-date";
 import { TodoCreatedDate } from "./entities/todo-created-date";
 import { TodoDescription } from "./entities/todo-description";
 import { TodoId } from "./entities/todo-id";
@@ -14,6 +16,7 @@ export class TodoService {
     constructor(
         private readonly repository: TodoInMemoryRepository,
         private readonly uuidGenerator: UUIDGenerator,
+        private readonly dateGenerator: DateGenerator,
     ) {}
 
     async create(createTodoDto: CreateTodoDto) {
@@ -31,12 +34,25 @@ export class TodoService {
         return id;
     }
 
-    complete(id: string) {
-        return id;
+    async done(id: UUID) {
+        const todo = await this.repository.findOne(new TodoId(id));
+        const completedAt = new TodoCompletedDate(
+            this.dateGenerator.generate(),
+        );
+
+        const doneTodo = todo.done(completedAt);
+        await this.repository.save(doneTodo);
+
+        return doneTodo;
     }
 
-    incomplete(id: string) {
-        return id;
+    async undone(id: UUID) {
+        const todo = await this.repository.findOne(new TodoId(id));
+
+        const undoneTodo = todo.undone();
+        await this.repository.save(undoneTodo);
+
+        return undoneTodo;
     }
 
     findAll() {
@@ -48,8 +64,8 @@ export class TodoService {
         }));
     }
 
-    findOne(id: number) {
-        return `This action returns a #${id} todo`;
+    async findOne(id: UUID) {
+        return await this.repository.findOne(new TodoId(id));
     }
 
     async remove(id: UUID) {
