@@ -17,7 +17,13 @@ export class TodoInMemoryRepository implements TodoRepository {
     }
 
     async save(value: Todo) {
-        this.value.push(value);
+        try {
+            await this.remove(value.id);
+        } catch {
+            // no-op
+        } finally {
+            this.value.push(value);
+        }
     }
 
     async remove(value: TodoId) {

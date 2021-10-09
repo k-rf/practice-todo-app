@@ -1,3 +1,4 @@
+import { TodoCompletedDate } from "todo/entities/todo-completed-date";
 import { TodoCreatedDate } from "todo/entities/todo-created-date";
 import { TodoDescription } from "todo/entities/todo-description";
 import { TodoId } from "todo/entities/todo-id";
@@ -53,6 +54,26 @@ describe("TodoInMemoryRepository", () => {
             await repository.save(todo);
 
             expect(repository.value[0]).toEqual(todo);
+        });
+
+        it("同じ ID を持つ TODO が存在する場合、その TODO を上書きする", async () => {
+            const todo = new Todo({
+                id: new TodoId(),
+                title: new TodoTitle("abc"),
+                description: new TodoDescription(""),
+                createdAt: new TodoCreatedDate(),
+            });
+
+            await repository.save(todo);
+
+            expect(repository.value[0]).toEqual(todo);
+            expect(repository.value.length).toEqual(1);
+
+            const doneTodo = todo.done(new TodoCompletedDate());
+            await repository.save(doneTodo);
+
+            expect(repository.value[0]).toEqual(doneTodo);
+            expect(repository.value.length).toEqual(1);
         });
     });
 
