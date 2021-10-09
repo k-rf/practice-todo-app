@@ -1,3 +1,4 @@
+import { TodoCompletedDate } from "./todo-completed-date";
 import { TodoCreatedDate } from "./todo-created-date";
 import { TodoDescription } from "./todo-description";
 import { TodoId } from "./todo-id";
@@ -15,9 +16,11 @@ describe("Todo", () => {
                 createdAt: new TodoCreatedDate(),
             });
 
-            const doneTodo = todo.done();
+            const completedAt = new TodoCompletedDate();
+            const doneTodo = todo.done(completedAt);
 
             expect(doneTodo.status).toEqual(TODO_STATUS.DONE);
+            expect(doneTodo.completedAt).toEqual(completedAt);
             expect(todo.status).toEqual(TODO_STATUS.PENDING);
         });
 
@@ -30,9 +33,11 @@ describe("Todo", () => {
                 createdAt: new TodoCreatedDate(),
             });
 
-            const doneTodo = todo.done();
+            const completedAt = new TodoCompletedDate();
+            const doneTodo = todo.done(completedAt);
 
             expect(doneTodo.status).toEqual(TODO_STATUS.DONE);
+            expect(doneTodo.completedAt).toEqual(completedAt);
             expect(todo.status).toEqual(TODO_STATUS.DONE);
         });
     });
@@ -45,11 +50,13 @@ describe("Todo", () => {
                 description: new TodoDescription(""),
                 status: TODO_STATUS.DONE,
                 createdAt: new TodoCreatedDate(),
+                completedAt: new TodoCompletedDate(),
             });
 
             const undoneTodo = todo.undone();
 
             expect(undoneTodo.status).toEqual(TODO_STATUS.PENDING);
+            expect(undoneTodo.completedAt).toBeUndefined();
             expect(todo.status).toEqual(TODO_STATUS.DONE);
         });
         it("Pending から Pending に更新する", () => {
@@ -63,6 +70,7 @@ describe("Todo", () => {
             const undoneTodo = todo.undone();
 
             expect(undoneTodo.status).toEqual(TODO_STATUS.PENDING);
+            expect(undoneTodo.completedAt).toBeUndefined();
             expect(todo.status).toEqual(TODO_STATUS.PENDING);
         });
     });

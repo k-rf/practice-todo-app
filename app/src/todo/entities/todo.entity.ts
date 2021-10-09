@@ -35,11 +35,19 @@ export class Todo {
         this.completedAt = props.completedAt;
     }
 
-    done() {
-        return new Todo({ ...this, status: TODO_STATUS.DONE });
+    done(completedAt: TodoCompletedDate) {
+        return new Todo({
+            ...this,
+            status: TODO_STATUS.DONE,
+            completedAt,
+        });
     }
 
     undone() {
-        return new Todo({ ...this, status: TODO_STATUS.PENDING });
+        return new Todo({
+            ...this,
+            status: TODO_STATUS.PENDING,
+            completedAt: undefined,
+        });
     }
 }
