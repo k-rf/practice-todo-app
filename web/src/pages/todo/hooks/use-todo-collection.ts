@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from "react";
 import { atom, useRecoilState } from "recoil";
 import { TodoApiAdapter } from "../api-adapter/todo-api-adapter";
+import { Todo } from "../model/todo";
 import { TodoCollection } from "../model/todo-collection";
 import { TodoStatus } from "../model/todo-status";
 
@@ -61,6 +62,13 @@ export const useTodoCollection = () => {
         [setTodoCollection],
     );
 
+    const changeLayout = useCallback(
+        async (props: Todo) => {
+            setTodoCollection((old) => old.update(props));
+        },
+        [setTodoCollection],
+    );
+
     return {
         state: todoCollection,
         action: useMemo(
@@ -69,8 +77,9 @@ export const useTodoCollection = () => {
                 create,
                 remove,
                 changeStatus,
+                changeLayout,
             }),
-            [findAll, create, remove, changeStatus],
+            [findAll, create, remove, changeStatus, changeLayout],
         ),
     };
 };

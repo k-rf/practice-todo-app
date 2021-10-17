@@ -9,12 +9,16 @@ export class TodoCollection {
         this.value = value ?? [];
     }
 
+    findById(id: string) {
+        return this.value.find((e) => e.id === id);
+    }
+
     append(value: Todo) {
         return new TodoCollection(this.value.concat(value));
     }
 
-    remove(value: string) {
-        return new TodoCollection(this.value.filter((e) => e.id !== value));
+    remove(id: string) {
+        return new TodoCollection(this.value.filter((e) => e.id !== id));
     }
 
     update(value: Todo) {
