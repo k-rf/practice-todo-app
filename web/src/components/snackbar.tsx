@@ -8,7 +8,8 @@ export const Snackbar = () => {
         <MuiSnackbar
             open={state.opened}
             onClose={action.close}
-            autoHideDuration={5000}
+            autoHideDuration={3_000}
+            anchorOrigin={{ vertical: "top", horizontal: "right" }}
         >
             <Alert severity={state.severity}>{state.message}</Alert>
         </MuiSnackbar>
