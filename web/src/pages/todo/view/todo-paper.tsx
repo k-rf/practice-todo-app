@@ -1,4 +1,4 @@
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Checkbox, Paper, Typography } from "@mui/material";
 import { RemoveIconButton } from "components/remove-icon-button";
 import { useSnackbar } from "hooks/use-snackbar";
 import { MouseEventHandler } from "react";
@@ -34,6 +34,15 @@ export const TodoPaper = (props: Props) => {
             });
     };
 
+    const handleChangeStatus = () => {
+        const nextStatus = props.status === "DONE" ? "PENDING" : "DONE";
+        action.changeStatus({ id: props.id, status: nextStatus }).catch((e) => {
+            if (e instanceof Error) {
+                snackbarAction.alert(e.message);
+            }
+        });
+    };
+
     return (
         <Paper
             onMouseEnter={props.onMouseEnter}
@@ -45,6 +54,14 @@ export const TodoPaper = (props: Props) => {
                 height={(theme) => theme.spacing(5)}
                 display="flex"
             >
+                <Checkbox
+                    size="small"
+                    checked={props.status === "DONE"}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        handleChangeStatus();
+                    }}
+                />
                 <Typography
                     sx={{
                         alignSelf: "center",
