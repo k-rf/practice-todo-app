@@ -7,7 +7,7 @@ import { TodoStatus } from "../model/todo-status";
 
 interface CreateProps {
     title: string;
-    description: string;
+    description?: string;
 }
 
 interface RemoveProps {

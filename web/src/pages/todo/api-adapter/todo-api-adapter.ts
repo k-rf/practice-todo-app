@@ -9,7 +9,7 @@ const baseUri = import.meta.env.VITE_BASE_URI ?? process.env.BASE_URI ?? "";
 namespace CreateTodo {
     export interface Request {
         title: string;
-        description: string;
+        description?: string;
         createdAt: Date;
     }
 

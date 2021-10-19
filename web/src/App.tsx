@@ -5,7 +5,7 @@ import { Todo } from "./pages/todo/view";
 import { Snackbar } from "components/snackbar";
 
 const styles: SxProps<Theme> = {
-    background: "linear-gradient(45deg, #12c2e9, #c471ed, #f64f59);",
+    background: "linear-gradient(315deg, #c9d6ff, #e2e2e2)",
     minHeight: "100vh",
 };
 

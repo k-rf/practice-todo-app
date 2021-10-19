@@ -2,15 +2,14 @@ import { TextField, TextFieldProps } from "@mui/material";
 
 type TodoTitleFieldProps = Omit<
     TextFieldProps,
-    "label" | "requtired" | "autoComplete" | "variant"
+    "label" | "autoComplete" | "variant"
 >;
 
 export const TodoTitleField = (props: TodoTitleFieldProps) => {
     return (
         <TextField
             {...props}
-            label="タイトル"
-            required
+            placeholder="なにをしようかな？"
             autoComplete="off"
             variant="outlined"
         />
