@@ -13,10 +13,10 @@ import {
     ValidationPipe,
 } from "@nestjs/common";
 import { plainToClass } from "class-transformer";
+import { InfrastructureException } from "exception/infrastructure.exception";
 import { Response } from "express";
-import { InfrastructureException } from "utils/exception/infrastructure.exception";
-import { DomainExceptionFilter } from "utils/filter/domain-exception.filter";
-import { InfrastructureExceptionFilter } from "utils/filter/infrastructure-exception.filter";
+import { DomainExceptionFilter } from "filter/domain-exception.filter";
+import { InfrastructureExceptionFilter } from "filter/infrastructure-exception.filter";
 import { ParseUUIDPipe } from "utils/parse-uuid.pipe";
 import { UUID } from "utils/uuid";
 import { ChangeTodoStatusDto } from "./dto/change-todo-status.dto";

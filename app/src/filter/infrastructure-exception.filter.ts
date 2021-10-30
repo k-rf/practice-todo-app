@@ -1,16 +1,16 @@
 import { ArgumentsHost, Catch, ExceptionFilter } from "@nestjs/common";
 import { Request, Response } from "express";
-import { DomainException } from "utils/exception/domain.exception";
+import { InfrastructureException } from "exception/infrastructure.exception";
 
-@Catch(DomainException)
-export class DomainExceptionFilter implements ExceptionFilter {
-    catch(exception: DomainException, host: ArgumentsHost) {
+@Catch(InfrastructureException)
+export class InfrastructureExceptionFilter implements ExceptionFilter {
+    catch(exception: InfrastructureException, host: ArgumentsHost) {
         const ctx = host.switchToHttp();
         const response = ctx.getResponse<Response>();
         const request = ctx.getRequest<Request>();
 
-        response.status(400).json({
-            statusCode: 400,
+        response.status(500).json({
+            statusCode: 500,
             error: exception.name,
             message: exception.message,
             timestamp: new Date().toISOString(),

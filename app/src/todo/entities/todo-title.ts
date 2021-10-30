@@ -1,4 +1,4 @@
-import { DomainException } from "utils/exception/domain.exception";
+import { DomainException } from "exception/domain.exception";
 
 export class TodoTitle {
     readonly value: string;

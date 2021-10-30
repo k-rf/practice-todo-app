@@ -1,7 +1,7 @@
 import { TodoId } from "todo/entities/todo-id";
 import { TodoRepository } from "todo/entities/todo-repository.interface";
 import { Todo } from "todo/entities/todo.entity";
-import { InfrastructureException } from "utils/exception/infrastructure.exception";
+import { InfrastructureException } from "exception/infrastructure.exception";
 
 export class TodoInMemoryRepository implements TodoRepository {
     constructor(readonly value: Todo[] = []) {}
