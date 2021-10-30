@@ -13,6 +13,6 @@ export class Todo {
 
     @Type() @IsNumber() readonly x: number = 0;
     @Type() @IsNumber() readonly y: number = 0;
-    @Type() @IsNumber() readonly w: number = 2;
+    @Type() @IsNumber() readonly w: number = 3;
     @Type() @IsNumber() readonly h: number = 2;
 }
