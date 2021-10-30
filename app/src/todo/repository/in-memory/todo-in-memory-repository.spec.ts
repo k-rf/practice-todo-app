@@ -1,8 +1,5 @@
 import { TodoCompletedDate } from "todo/entities/todo-completed-date";
-import { TodoCreatedDate } from "todo/entities/todo-created-date";
-import { TodoDescription } from "todo/entities/todo-description";
 import { TodoId } from "todo/entities/todo-id";
-import { TodoTitle } from "todo/entities/todo-title";
 import { Todo } from "todo/entities/todo.entity";
 import { TodoInMemoryRepository } from "./todo-in-memory-repository";
 
@@ -19,13 +16,7 @@ describe("TodoInMemoryRepository", () => {
     describe("findOne メソッド", () => {
         it("TODO を 1 件取得する", async () => {
             const id = new TodoId();
-
-            const todo = new Todo({
-                id,
-                title: new TodoTitle("abc"),
-                description: new TodoDescription(""),
-                createdAt: new TodoCreatedDate(),
-            });
+            const todo = Todo.of({ id });
 
             await repository.save(todo);
             const result = await repository.findOne(id);
@@ -44,12 +35,7 @@ describe("TodoInMemoryRepository", () => {
 
     describe("save メソッド", () => {
         it("TODO を保存する", async () => {
-            const todo = new Todo({
-                id: new TodoId(),
-                title: new TodoTitle("abc"),
-                description: new TodoDescription(""),
-                createdAt: new TodoCreatedDate(),
-            });
+            const todo = Todo.of();
 
             await repository.save(todo);
 
@@ -57,12 +43,7 @@ describe("TodoInMemoryRepository", () => {
         });
 
         it("同じ ID を持つ TODO が存在する場合、その TODO を上書きする", async () => {
-            const todo = new Todo({
-                id: new TodoId(),
-                title: new TodoTitle("abc"),
-                description: new TodoDescription(""),
-                createdAt: new TodoCreatedDate(),
-            });
+            const todo = Todo.of();
 
             await repository.save(todo);
 
@@ -80,13 +61,7 @@ describe("TodoInMemoryRepository", () => {
     describe("remove メソッド", () => {
         it("TODO を削除する", async () => {
             const id = new TodoId();
-
-            const todo = new Todo({
-                id,
-                title: new TodoTitle("abc"),
-                description: new TodoDescription(""),
-                createdAt: new TodoCreatedDate(),
-            });
+            const todo = Todo.of({ id });
 
             await repository.save(todo);
             await repository.remove(id);

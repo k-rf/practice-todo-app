@@ -38,19 +38,21 @@ describe("TodoService", () => {
 
     describe("create メソッド", () => {
         it("TODO を作成する", async () => {
+            const title = "abc";
+            const description = "xyz";
             const createdAt = new Date();
             const createTodoDto = plainToClass(CreateTodoDto, {
-                title: "abc",
-                description: "xyz",
+                title,
+                description,
                 createdAt,
             });
 
             await service.create(createTodoDto);
 
-            const todo = new Todo({
+            const todo = Todo.of({
                 id: new TodoId(uuidGenerator.lastGenerated()),
-                title: new TodoTitle("abc"),
-                description: new TodoDescription("xyz"),
+                title: new TodoTitle(title),
+                description: new TodoDescription(description),
                 createdAt: new TodoCreatedDate(createdAt),
             });
 

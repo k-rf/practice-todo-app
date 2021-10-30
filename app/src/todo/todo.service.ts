@@ -23,7 +23,7 @@ export class TodoService {
     async create(createTodoDto: CreateTodoDto) {
         const id = this.uuidGenerator.generate();
 
-        const todo = new Todo({
+        const todo = Todo.of({
             id: new TodoId(id),
             title: new TodoTitle(createTodoDto.title),
             description: new TodoDescription(createTodoDto.description),
