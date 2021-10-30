@@ -75,7 +75,7 @@ describe("TodoService", () => {
 
             const todo = await service.findOne(id);
 
-            expect(todo.id).toEqual(id);
+            expect(todo.id).toEqual(String(id));
         });
     });
 
@@ -123,7 +123,7 @@ describe("TodoService", () => {
             const doneTodo = await service.changeStatus(changeStatusDto);
             const stored = await repository.findOne(todoId);
 
-            expect(stored).toEqual(doneTodo);
+            expect(String(stored.id)).toEqual(doneTodo.id);
             expect(stored.status).toEqual(TODO_STATUS.DONE);
             expect(stored.completedAt).toEqual(dateGenerator.lastGenerated());
         });
@@ -139,7 +139,7 @@ describe("TodoService", () => {
             const undoneTodo = await service.changeStatus(changeStatusDto);
             const stored = await repository.findOne(todoId);
 
-            expect(stored).toEqual(undoneTodo);
+            expect(String(stored.id)).toEqual(undoneTodo.id);
             expect(stored.status).toEqual(TODO_STATUS.PENDING);
             expect(stored.completedAt).toBeUndefined();
         });

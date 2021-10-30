@@ -70,7 +70,16 @@ export class TodoService {
     }
 
     async findOne(id: UUID) {
-        return await this.repository.findOne(new TodoId(id));
+        const todo = await this.repository.findOne(new TodoId(id));
+
+        return {
+            id: String(todo.id),
+            title: String(todo.title),
+            description: String(todo.description),
+            status: todo.status,
+            createdAt: todo.createdAt,
+            completedAt: todo.completedAt,
+        };
     }
 
     async remove(id: UUID) {
