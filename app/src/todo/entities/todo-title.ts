@@ -1,6 +1,9 @@
 import { DomainException } from "exception/domain.exception";
 
+const brand = Symbol();
 export class TodoTitle {
+    private [brand]: never;
+
     readonly value: string;
 
     constructor(value: string) {

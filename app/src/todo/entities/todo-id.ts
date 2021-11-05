@@ -1,3 +1,6 @@
 import { UUID } from "utils/uuid";
 
-export class TodoId extends UUID {}
+const brand = Symbol();
+export class TodoId extends UUID {
+    private [brand]: never;
+}

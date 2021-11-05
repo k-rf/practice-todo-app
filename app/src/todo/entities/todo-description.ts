@@ -1,4 +1,7 @@
+const brand = Symbol();
 export class TodoDescription {
+    private [brand]: never;
+
     readonly value: string;
 
     constructor(value: string) {

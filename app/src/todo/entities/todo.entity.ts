@@ -49,12 +49,7 @@ export class Todo {
             title: new TodoTitle("Default Title"),
             description: new TodoDescription("Default Description"),
             createdAt: new TodoCreatedDate(),
-            rect: new TodoRect({
-                x: new TodoRectX(0),
-                y: new TodoRectY(0),
-                w: new TodoRectW(3),
-                h: new TodoRectH(2),
-            }),
+            rect: TodoRect.of(),
             ...propsOverridden,
         });
     }

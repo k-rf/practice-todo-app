@@ -1,6 +1,8 @@
 import { DomainException } from "exception/domain.exception";
 
+const brand = Symbol();
 export class TodoRectW {
+    private [brand]: never;
     constructor(readonly value: number) {
         const MIN = 2 as const;
         const MAX = 6 as const;

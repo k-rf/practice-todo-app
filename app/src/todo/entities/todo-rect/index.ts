@@ -22,4 +22,14 @@ export class TodoRect {
         this.w = props.w;
         this.h = props.h;
     }
+
+    static of(propsOverridden?: Partial<Props>) {
+        return new TodoRect({
+            x: new TodoRectX(0),
+            y: new TodoRectY(0),
+            w: new TodoRectW(3),
+            h: new TodoRectH(2),
+            ...propsOverridden,
+        });
+    }
 }
