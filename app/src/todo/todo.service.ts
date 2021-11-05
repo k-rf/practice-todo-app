@@ -8,6 +8,11 @@ import { TodoCompletedDate } from "./entities/todo-completed-date";
 import { TodoCreatedDate } from "./entities/todo-created-date";
 import { TodoDescription } from "./entities/todo-description";
 import { TodoId } from "./entities/todo-id";
+import { TodoRect } from "./entities/todo-rect";
+import { TodoRectH } from "./entities/todo-rect/todo-rect-h";
+import { TodoRectW } from "./entities/todo-rect/todo-rect-w";
+import { TodoRectX } from "./entities/todo-rect/todo-rect-x";
+import { TodoRectY } from "./entities/todo-rect/todo-rect-y";
 import { TodoTitle } from "./entities/todo-title";
 import { Todo } from "./entities/todo.entity";
 import { TodoInMemoryRepository } from "./repository/in-memory/todo-in-memory-repository";
@@ -28,6 +33,12 @@ export class TodoService {
             title: new TodoTitle(createTodoDto.title),
             description: new TodoDescription(createTodoDto.description),
             createdAt: new TodoCreatedDate(createTodoDto.createdAt),
+            rect: new TodoRect({
+                x: new TodoRectX(createTodoDto.x),
+                y: new TodoRectY(createTodoDto.y),
+                w: new TodoRectW(createTodoDto.w),
+                h: new TodoRectH(createTodoDto.h),
+            }),
         });
 
         await this.repository.save(todo);

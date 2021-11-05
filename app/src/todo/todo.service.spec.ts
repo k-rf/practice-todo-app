@@ -1,5 +1,4 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { plainToClass } from "class-transformer";
 import { DateGenerator } from "utils/date-generator";
 import { UtilsModule } from "utils/utils.module";
 import { UUIDGenerator } from "utils/uuid-generator";
@@ -8,6 +7,11 @@ import { CreateTodoDto } from "./dto/create-todo.dto";
 import { TodoCreatedDate } from "./entities/todo-created-date";
 import { TodoDescription } from "./entities/todo-description";
 import { TodoId } from "./entities/todo-id";
+import { TodoRect } from "./entities/todo-rect";
+import { TodoRectH } from "./entities/todo-rect/todo-rect-h";
+import { TodoRectW } from "./entities/todo-rect/todo-rect-w";
+import { TodoRectX } from "./entities/todo-rect/todo-rect-x";
+import { TodoRectY } from "./entities/todo-rect/todo-rect-y";
 import { TODO_STATUS } from "./entities/todo-status";
 import { TodoTitle } from "./entities/todo-title";
 import { Todo } from "./entities/todo.entity";
@@ -41,19 +45,31 @@ describe("TodoService", () => {
             const title = "abc";
             const description = "xyz";
             const createdAt = new Date();
-            const createTodoDto = plainToClass(CreateTodoDto, {
-                title,
-                description,
-                createdAt,
-            });
+            const [x, y, h, w] = [2, 2, 3, 3];
 
-            await service.create(createTodoDto);
+            await service.create(
+                CreateTodoDto.of({
+                    title,
+                    description,
+                    createdAt,
+                    x,
+                    y,
+                    w,
+                    h,
+                }),
+            );
 
             const todo = Todo.of({
                 id: new TodoId(uuidGenerator.lastGenerated()),
                 title: new TodoTitle(title),
                 description: new TodoDescription(description),
                 createdAt: new TodoCreatedDate(createdAt),
+                rect: new TodoRect({
+                    x: new TodoRectX(x),
+                    y: new TodoRectY(y),
+                    w: new TodoRectW(w),
+                    h: new TodoRectH(h),
+                }),
             });
 
             expect(repository.value[0]).toEqual(todo);
@@ -62,14 +78,7 @@ describe("TodoService", () => {
 
     describe("findOne メソッド", () => {
         beforeEach(async () => {
-            const createdAt = new Date();
-            const createTodoDto = plainToClass(CreateTodoDto, {
-                title: "abc",
-                description: "xyz",
-                createdAt,
-            });
-
-            await service.create(createTodoDto);
+            await service.create(CreateTodoDto.of());
         });
 
         it("指定した TODO を取得する", async () => {
@@ -83,14 +92,7 @@ describe("TodoService", () => {
 
     describe("remove メソッド", () => {
         beforeEach(async () => {
-            const createdAt = new Date();
-            const createTodoDto = plainToClass(CreateTodoDto, {
-                title: "abc",
-                description: "xyz",
-                createdAt,
-            });
-
-            await service.create(createTodoDto);
+            await service.create(CreateTodoDto.of());
         });
 
         it("TODO を削除する", async () => {
@@ -104,20 +106,13 @@ describe("TodoService", () => {
 
     describe("changeStatus メソッド", () => {
         beforeEach(async () => {
-            const createdAt = new Date();
-            const createTodoDto = plainToClass(CreateTodoDto, {
-                title: "abc",
-                description: "xyz",
-                createdAt,
-            });
-
-            await service.create(createTodoDto);
+            await service.create(CreateTodoDto.of());
         });
 
         it("TODO を「完了」状態にする", async () => {
             const id = uuidGenerator.lastGenerated();
             const todoId = new TodoId(id);
-            const changeStatusDto = plainToClass(ChangeTodoStatusDto, {
+            const changeStatusDto = ChangeTodoStatusDto.of({
                 id,
                 status: "DONE",
             });
@@ -133,7 +128,7 @@ describe("TodoService", () => {
         it("TODO を「未完了」状態にする", async () => {
             const id = uuidGenerator.lastGenerated();
             const todoId = new TodoId(id);
-            const changeStatusDto = plainToClass(ChangeTodoStatusDto, {
+            const changeStatusDto = ChangeTodoStatusDto.of({
                 id,
                 status: "PENDING",
             });

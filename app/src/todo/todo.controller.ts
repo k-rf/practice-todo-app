@@ -12,7 +12,6 @@ import {
     UsePipes,
     ValidationPipe,
 } from "@nestjs/common";
-import { plainToClass } from "class-transformer";
 import { InfrastructureException } from "exception/infrastructure.exception";
 import { Response } from "express";
 import { DomainExceptionFilter } from "filter/domain-exception.filter";
@@ -44,7 +43,7 @@ export class TodoController {
         @Body() changeTodoStatusDto: ChangeTodoStatusDto,
         @Res() res: Response,
     ) {
-        const dto = plainToClass(ChangeTodoStatusDto, {
+        const dto = ChangeTodoStatusDto.of({
             ...changeTodoStatusDto,
             id,
         });
