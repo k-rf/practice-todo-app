@@ -19,6 +19,7 @@ services:
             context: ./web/.devcontainer
             args:
                 - USER=web
+        container_name: todo-app-web
         ports:
             - 8080:8080
         # environment:
@@ -50,6 +51,7 @@ services:
             context: ./app/.devcontainer
             args:
                 - USER=app
+        container_name: todo-app-app
         ports:
             - 3000:3000
         # environment:

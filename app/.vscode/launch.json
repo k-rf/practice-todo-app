@@ -1,7 +1,4 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
@@ -9,10 +6,7 @@
             "name": "vscode-jest-tests",
             "request": "launch",
             "program": "${workspaceFolder}/node_modules/.bin/jest",
-            "args": [
-                "--runInBand",
-                "--watchAll=false"
-            ],
+            "args": ["--runInBand", "--watchAll=false"],
             "cwd": "${workspaceFolder}",
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
@@ -32,12 +26,18 @@
             "presentation": {
                 "hidden": false
             }
+        },
+        {
+            "type": "node-terminal",
+            "name": "JavaScript Debug Terminal",
+            "request": "launch",
+            "cwd": "${workspaceFolder}"
         }
     ],
     "compounds": [
         {
             "name": "Launch dev server",
-            "configurations": ["Launch via Yarn", "Launch Chrome"]
+            "configurations": ["Launch via Yarn"]
         }
     ]
 }
