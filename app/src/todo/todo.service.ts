@@ -4,6 +4,7 @@ import { UUID } from "utils/uuid";
 import { UUIDGenerator } from "utils/uuid-generator";
 import { ChangeTodoStatusDto } from "./dto/change-todo-status.dto";
 import { CreateTodoDto } from "./dto/create-todo.dto";
+import { TodoOutputDto } from "./dto/todo.output.dto";
 import { TodoCompletedDate } from "./entities/todo-completed-date";
 import { TodoCreatedDate } from "./entities/todo-created-date";
 import { TodoDescription } from "./entities/todo-description";
@@ -59,38 +60,52 @@ export class TodoService {
 
         await this.repository.save(result);
 
-        return {
+        return TodoOutputDto.of({
             id: String(result.id),
             title: String(result.title),
-            description: String(result.description),
+            description: result.description.value,
             status: result.status,
             createdAt: result.createdAt,
             completedAt: result.completedAt,
-        };
+            x: result.rect.x.value,
+            y: result.rect.y.value,
+            w: result.rect.w.value,
+            h: result.rect.h.value,
+        });
     }
 
     findAll() {
-        return this.repository.value.map((todo) => ({
-            id: String(todo.id),
-            title: String(todo.title),
-            description: String(todo.description),
-            status: todo.status,
-            createdAt: todo.createdAt,
-            completedAt: todo.completedAt,
-        }));
+        return this.repository.value.map((todo) =>
+            TodoOutputDto.of({
+                id: String(todo.id),
+                title: String(todo.title),
+                description: String(todo.description),
+                status: todo.status,
+                createdAt: todo.createdAt,
+                completedAt: todo.completedAt,
+                x: todo.rect.x.value,
+                y: todo.rect.y.value,
+                w: todo.rect.w.value,
+                h: todo.rect.h.value,
+            }),
+        );
     }
 
     async findOne(id: UUID) {
         const todo = await this.repository.findOne(new TodoId(id));
 
-        return {
+        return TodoOutputDto.of({
             id: String(todo.id),
             title: String(todo.title),
             description: String(todo.description),
             status: todo.status,
             createdAt: todo.createdAt,
             completedAt: todo.completedAt,
-        };
+            x: todo.rect.x.value,
+            y: todo.rect.y.value,
+            w: todo.rect.w.value,
+            h: todo.rect.h.value,
+        });
     }
 
     async remove(id: UUID) {

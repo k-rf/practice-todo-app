@@ -12,6 +12,7 @@ interface Props {
     w: number;
     h: number;
 }
+
 export class CreateTodoDto {
     @Type() @IsString() readonly title: string;
     @Type() @IsOptional() @IsString() readonly description: string;
