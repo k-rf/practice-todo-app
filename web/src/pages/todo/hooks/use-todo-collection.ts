@@ -8,6 +8,8 @@ import { TodoStatus } from "../model/todo-status";
 interface CreateProps {
     title: string;
     description?: string;
+    x: number;
+    y: number;
 }
 
 interface RemoveProps {
@@ -38,6 +40,8 @@ export const useTodoCollection = () => {
         async (props: CreateProps) => {
             const result = await new TodoApiAdapter().create({
                 ...props,
+                w: 3,
+                h: 2,
                 createdAt: new Date(),
             });
 

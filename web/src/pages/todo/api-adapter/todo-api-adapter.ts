@@ -11,6 +11,10 @@ namespace CreateTodo {
         title: string;
         description?: string;
         createdAt: Date;
+        x: number;
+        y: number;
+        w: number;
+        h: number;
     }
 
     export interface Response {

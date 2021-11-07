@@ -34,4 +34,16 @@ export class TodoCollection {
             ...this.value.slice(index + 1),
         ]);
     }
+
+    nextPosition() {
+        const maxY = this.value.reduce((p, c) => Math.max(p, c.y), 0);
+        const target = this.value
+            .filter((e) => e.y === maxY)
+            .sort((a, b) => a.x - b.x)
+            .at(0);
+
+        const targetY = target?.y ?? 0;
+        const targetH = target?.h ?? 0;
+        return { x: target?.x ?? 0, y: targetY + targetH };
+    }
 }

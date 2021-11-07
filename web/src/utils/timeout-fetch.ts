@@ -18,6 +18,10 @@ export const timeoutFetch = async (
             signal: controller.signal,
         });
 
+        if (!response.ok) {
+            throw await response.json();
+        }
+
         return response;
     } catch (error) {
         return String(error);

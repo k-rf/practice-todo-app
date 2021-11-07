@@ -14,7 +14,7 @@ export interface FormValues {
 }
 
 export const TodoQuickCreateForm = () => {
-    const { action } = useTodoCollection();
+    const { state, action } = useTodoCollection();
     const { action: snackbarAction } = useSnackbar();
 
     const { handleSubmit, reset, control } = useForm<FormValues>({
@@ -30,8 +30,10 @@ export const TodoQuickCreateForm = () => {
     });
 
     const onSubmit: SubmitHandler<FormValues> = (data) => {
+        const { x, y } = state.nextPosition();
+
         action
-            .create({ ...data })
+            .create({ ...data, x, y })
             .then(() => {
                 snackbarAction.success(`Todo を作成しました`);
             })
