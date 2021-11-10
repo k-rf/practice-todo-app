@@ -18,6 +18,7 @@ import { DomainExceptionFilter } from "filter/domain-exception.filter";
 import { InfrastructureExceptionFilter } from "filter/infrastructure-exception.filter";
 import { ParseUUIDPipe } from "utils/parse-uuid.pipe";
 import { UUID } from "utils/uuid";
+import { ChangeTodoLayoutsDto } from "./dto/change-todo-layouts.dto";
 import { ChangeTodoStatusDto } from "./dto/change-todo-status.dto";
 import { CreateTodoDto } from "./dto/create-todo.dto";
 import { TodoService } from "./todo.service";
@@ -60,6 +61,11 @@ export class TodoController {
                 throw e;
             }
         }
+    }
+
+    @Put("layouts")
+    async changeLayouts(@Body() changeTodoLayoutsDto: ChangeTodoLayoutsDto) {
+        await this.todoService.changeLayouts(changeTodoLayoutsDto);
     }
 
     @Get()

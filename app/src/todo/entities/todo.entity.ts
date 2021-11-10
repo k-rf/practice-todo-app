@@ -4,17 +4,13 @@ import { TodoDescription } from "./todo-description";
 import { TodoDueDate } from "./todo-due-date";
 import { TodoId } from "./todo-id";
 import { TodoRect } from "./todo-rect";
-import { TodoRectH } from "./todo-rect/todo-rect-h";
-import { TodoRectW } from "./todo-rect/todo-rect-w";
-import { TodoRectX } from "./todo-rect/todo-rect-x";
-import { TodoRectY } from "./todo-rect/todo-rect-y";
 import { TodoStatus, TODO_STATUS } from "./todo-status";
 import { TodoTitle } from "./todo-title";
 
 export interface Props {
     id: TodoId;
     title: TodoTitle;
-    description: TodoDescription;
+    description?: TodoDescription;
     status?: TodoStatus;
     createdAt: TodoCreatedDate;
     due?: TodoDueDate;
@@ -25,7 +21,7 @@ export interface Props {
 export class Todo {
     readonly id: TodoId;
     readonly title: TodoTitle;
-    readonly description: TodoDescription;
+    readonly description?: TodoDescription;
     readonly status: TodoStatus;
     readonly createdAt: TodoCreatedDate;
     readonly due?: TodoDueDate;
@@ -47,7 +43,6 @@ export class Todo {
         return new Todo({
             id: new TodoId(),
             title: new TodoTitle("Default Title"),
-            description: new TodoDescription("Default Description"),
             createdAt: new TodoCreatedDate(),
             rect: TodoRect.of(),
             ...propsOverridden,

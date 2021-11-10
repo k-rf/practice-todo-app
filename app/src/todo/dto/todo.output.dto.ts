@@ -15,7 +15,7 @@ interface Props {
     h: number;
 }
 
-export class TodoOutputDto {
+export class TodoDto {
     readonly id: string;
     readonly title: string;
     readonly description?: string;
@@ -43,7 +43,7 @@ export class TodoOutputDto {
     }
 
     static of(propsOverridden?: Partial<Props>) {
-        return new TodoOutputDto({
+        return new TodoDto({
             id: String(new UUID()),
             title: "Default Title",
             description: undefined,

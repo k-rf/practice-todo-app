@@ -2,8 +2,10 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { DateGenerator } from "utils/date-generator";
 import { UtilsModule } from "utils/utils.module";
 import { UUIDGenerator } from "utils/uuid-generator";
+import { ChangeTodoLayoutsDto } from "./dto/change-todo-layouts.dto";
 import { ChangeTodoStatusDto } from "./dto/change-todo-status.dto";
 import { CreateTodoDto } from "./dto/create-todo.dto";
+import { TodoDto } from "./dto/todo.output.dto";
 import { TodoCreatedDate } from "./entities/todo-created-date";
 import { TodoDescription } from "./entities/todo-description";
 import { TodoId } from "./entities/todo-id";
@@ -139,6 +141,73 @@ describe("TodoService", () => {
             expect(String(stored.id)).toEqual(undoneTodo.id);
             expect(stored.status).toEqual(TODO_STATUS.PENDING);
             expect(stored.completedAt).toBeUndefined();
+        });
+    });
+
+    describe("changeLayouts メソッド", () => {
+        let todoCollection: Todo[];
+
+        beforeEach(async () => {
+            todoCollection = [
+                Todo.of({
+                    rect: TodoRect.of({
+                        x: new TodoRectX(0),
+                        y: new TodoRectY(0),
+                    }),
+                }),
+                Todo.of({
+                    rect: TodoRect.of({
+                        x: new TodoRectX(3),
+                        y: new TodoRectY(4),
+                    }),
+                }),
+            ];
+
+            await Promise.all(
+                todoCollection.map(async (todo) => {
+                    await repository.save(todo);
+                }),
+            );
+        });
+
+        it("すべての TODO の配置やサイズを更新する", async () => {
+            const dto = ChangeTodoLayoutsDto.of({
+                todoCollection: [
+                    TodoDto.of({
+                        id: String(todoCollection[0].id),
+                        x: 4,
+                        y: 0,
+                    }),
+                    TodoDto.of({
+                        id: String(todoCollection[1].id),
+                        x: 3,
+                        y: 2,
+                    }),
+                ],
+            });
+
+            await service.changeLayouts(dto);
+
+            const expected = [
+                Todo.of({
+                    id: todoCollection[0].id,
+                    createdAt: todoCollection[0].createdAt,
+                    rect: TodoRect.of({
+                        x: new TodoRectX(4),
+                        y: new TodoRectY(0),
+                    }),
+                }),
+                Todo.of({
+                    id: todoCollection[1].id,
+                    createdAt: todoCollection[1].createdAt,
+                    rect: TodoRect.of({
+                        x: new TodoRectX(3),
+                        y: new TodoRectY(2),
+                    }),
+                }),
+            ];
+
+            expect(repository.value).toStrictEqual(expected);
         });
     });
 });

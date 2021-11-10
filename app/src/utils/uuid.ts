@@ -1,9 +1,9 @@
 import { v4 } from "uuid";
 
 export class UUID {
-    private value: string;
+    readonly value: string;
 
-    constructor(value?: UUID) {
+    constructor(value?: string | UUID) {
         this.value = value?.toString() ?? v4();
     }
 

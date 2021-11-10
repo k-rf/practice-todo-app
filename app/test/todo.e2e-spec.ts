@@ -1,6 +1,8 @@
 import { INestApplication } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 import * as request from "supertest";
+import { ChangeTodoLayoutsDto } from "todo/dto/change-todo-layouts.dto";
+import { TodoDto } from "todo/dto/todo.output.dto";
 import { TodoCreatedDate } from "todo/entities/todo-created-date";
 import { TodoDescription } from "todo/entities/todo-description";
 import { TodoId } from "todo/entities/todo-id";
@@ -238,6 +240,81 @@ describe("TodoController (e2e)", () => {
                     .put(`/todo/${String(id)}/status`)
                     .send(dto)
                     .expect(404);
+            });
+        });
+    });
+
+    describe("TODO を配置を更新する (PUT /todo/layouts)", () => {
+        let todoCollection: Todo[];
+
+        beforeEach(async () => {
+            todoCollection = [
+                Todo.of({
+                    rect: TodoRect.of({
+                        x: new TodoRectX(0),
+                        y: new TodoRectY(0),
+                    }),
+                }),
+                Todo.of({
+                    rect: TodoRect.of({
+                        x: new TodoRectX(3),
+                        y: new TodoRectY(4),
+                    }),
+                }),
+            ];
+
+            await Promise.all(
+                todoCollection.map(async (todo) => {
+                    await repository.save(todo);
+                }),
+            );
+        });
+
+        describe("正常な値を与える", () => {
+            it("TODO の配置を更新する", async () => {
+                const dto = ChangeTodoLayoutsDto.of({
+                    todoCollection: [
+                        TodoDto.of({
+                            id: String(todoCollection[0].id),
+                            createdAt: todoCollection[0].createdAt,
+                            x: 4,
+                            y: 0,
+                        }),
+                        TodoDto.of({
+                            id: String(todoCollection[1].id),
+                            createdAt: todoCollection[1].createdAt,
+                            x: 3,
+                            y: 2,
+                        }),
+                    ],
+                });
+
+                const expected = [
+                    Todo.of({
+                        id: todoCollection[0].id,
+                        createdAt: todoCollection[0].createdAt,
+                        rect: TodoRect.of({
+                            x: new TodoRectX(4),
+                            y: new TodoRectY(0),
+                        }),
+                    }),
+                    Todo.of({
+                        id: todoCollection[1].id,
+                        createdAt: todoCollection[1].createdAt,
+                        rect: TodoRect.of({
+                            x: new TodoRectX(3),
+                            y: new TodoRectY(2),
+                        }),
+                    }),
+                ];
+
+                return request(app.getHttpServer())
+                    .put(`/todo/layouts`)
+                    .send(dto)
+                    .expect(200)
+                    .expect(() => {
+                        expect(repository.value).toStrictEqual(expected);
+                    });
             });
         });
     });

@@ -2,12 +2,14 @@ import { Injectable } from "@nestjs/common";
 import { DateGenerator } from "utils/date-generator";
 import { UUID } from "utils/uuid";
 import { UUIDGenerator } from "utils/uuid-generator";
+import { ChangeTodoLayoutsDto } from "./dto/change-todo-layouts.dto";
 import { ChangeTodoStatusDto } from "./dto/change-todo-status.dto";
 import { CreateTodoDto } from "./dto/create-todo.dto";
-import { TodoOutputDto } from "./dto/todo.output.dto";
+import { TodoDto } from "./dto/todo.output.dto";
 import { TodoCompletedDate } from "./entities/todo-completed-date";
 import { TodoCreatedDate } from "./entities/todo-created-date";
 import { TodoDescription } from "./entities/todo-description";
+import { TodoDueDate } from "./entities/todo-due-date";
 import { TodoId } from "./entities/todo-id";
 import { TodoRect } from "./entities/todo-rect";
 import { TodoRectH } from "./entities/todo-rect/todo-rect-h";
@@ -60,10 +62,10 @@ export class TodoService {
 
         await this.repository.save(result);
 
-        return TodoOutputDto.of({
+        return TodoDto.of({
             id: String(result.id),
-            title: String(result.title),
-            description: result.description.value,
+            title: result.title.value,
+            description: result.description?.value,
             status: result.status,
             createdAt: result.createdAt,
             completedAt: result.completedAt,
@@ -74,9 +76,39 @@ export class TodoService {
         });
     }
 
+    async changeLayouts(dto: ChangeTodoLayoutsDto) {
+        const todoCollection = dto.todoCollection.map((todo) =>
+            Todo.of({
+                id: new TodoId(todo.id),
+                title: new TodoTitle(todo.title),
+                description: todo.description
+                    ? new TodoDescription(todo.description)
+                    : undefined,
+                status: todo.status,
+                createdAt: new TodoCreatedDate(todo.createdAt),
+                due: todo.due ? new TodoDueDate(todo.due) : undefined,
+                completedAt: todo.completedAt
+                    ? new TodoCompletedDate(todo.completedAt)
+                    : undefined,
+                rect: TodoRect.of({
+                    x: new TodoRectX(todo.x),
+                    y: new TodoRectY(todo.y),
+                    w: new TodoRectW(todo.w),
+                    h: new TodoRectH(todo.h),
+                }),
+            }),
+        );
+
+        await Promise.all(
+            todoCollection.map(
+                async (todo) => await this.repository.save(todo),
+            ),
+        );
+    }
+
     findAll() {
         return this.repository.value.map((todo) =>
-            TodoOutputDto.of({
+            TodoDto.of({
                 id: String(todo.id),
                 title: String(todo.title),
                 description: String(todo.description),
@@ -94,7 +126,7 @@ export class TodoService {
     async findOne(id: UUID) {
         const todo = await this.repository.findOne(new TodoId(id));
 
-        return TodoOutputDto.of({
+        return TodoDto.of({
             id: String(todo.id),
             title: String(todo.title),
             description: String(todo.description),

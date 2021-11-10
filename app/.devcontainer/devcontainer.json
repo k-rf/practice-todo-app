@@ -8,15 +8,16 @@
     "overrideCommand": true,
     "shutdownAction": "none",
     "extensions": [
+        "abhijoybasak.nestjs-files",
+        "dbaeumer.vscode-eslint",
         "eamodio.gitlens",
+        "esbenp.prettier-vscode",
+        "hbenl.vscode-test-explorer",
+        "kavod-io.vscode-jest-test-adapter",
         "mhutchie.git-graph",
         "ms-azuretools.vscode-docker",
         "mutantdino.resourcemonitor",
-        "esbenp.prettier-vscode",
-        "dbaeumer.vscode-eslint",
-        "orta.vscode-jest",
-        "streetsidesoftware.code-spell-checker",
-        "abhijoybasak.nestjs-files"
+        "streetsidesoftware.code-spell-checker"
     ],
     "settings": {
         "[typescript]": {
