@@ -6,7 +6,7 @@ interface Props {
 }
 
 export class ChangeTodoLayoutsDto {
-    @Type() readonly todoCollection: TodoDto[];
+    @Type(() => TodoDto) readonly todoCollection: TodoDto[];
 
     private constructor(props?: Props) {
         if (props) {

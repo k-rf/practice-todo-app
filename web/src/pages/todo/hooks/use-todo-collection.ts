@@ -67,8 +67,9 @@ export const useTodoCollection = () => {
     );
 
     const changeLayout = useCallback(
-        async (props: Todo) => {
-            setTodoCollection((old) => old.update(props));
+        async (props: Todo[]) => {
+            await new TodoApiAdapter().changeLayouts(props);
+            setTodoCollection(new TodoCollection(props));
         },
         [setTodoCollection],
     );

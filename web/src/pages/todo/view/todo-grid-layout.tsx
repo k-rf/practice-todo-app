@@ -38,22 +38,36 @@ export const TodoGridLayout: VFC<Props> = (props) => {
         setHover(-1);
     };
 
-    const handleChangeLayout = (newItem: {
-        x: number;
-        y: number;
-        w: number;
-        h: number;
-        i: string;
-    }) => {
+    const handleChangeLayout = async (
+        layout: RGL.Layout[],
+        newItem: RGL.Layout,
+    ) => {
+        const collection = layout
+            .filter((e) => e.i !== newItem.i)
+            .map((e) => {
+                const todo = props.collection.findById(e.i);
+                if (todo) {
+                    return { ...todo, x: e.x, y: e.y, w: e.w, h: e.h };
+                }
+            })
+            .filter(
+                (e): e is Exclude<typeof e, undefined> =>
+                    typeof e !== undefined,
+            );
+
         const todo = props.collection.findById(newItem.i);
         if (todo) {
-            action.changeLayout({
-                ...todo,
-                x: newItem.x,
-                y: newItem.y,
-                w: newItem.w,
-                h: newItem.h,
-            });
+            await action.changeLayout(
+                collection.concat({
+                    ...todo,
+                    x: newItem.x,
+                    y: newItem.y,
+                    w: newItem.w,
+                    h: newItem.h,
+                }),
+            );
+        } else {
+            await action.changeLayout(collection);
         }
     };
 
@@ -63,17 +77,11 @@ export const TodoGridLayout: VFC<Props> = (props) => {
             layout={items}
             cols={12}
             rowHeight={24}
-            onResizeStop={(layout, oldItem, newItem) => {
-                handleChangeLayout(newItem);
+            onResizeStop={(layout, _oldItem, newItem) => {
+                handleChangeLayout(layout, newItem);
             }}
-            onDragStop={(_layout, _oldItem, newItem) => {
-                handleChangeLayout(newItem);
-            }}
-            onLayoutChange={(layout) => {
-                console.log("onLayoutChange");
-                layout.forEach((newItem) => {
-                    handleChangeLayout(newItem);
-                });
+            onDragStop={(layout, _oldItem, newItem) => {
+                handleChangeLayout(layout, newItem);
             }}
         >
             {data.map((e, i) => (

@@ -96,4 +96,18 @@ export class TodoApiAdapter {
             throw new Error(`Todo のステータス更新に失敗しました`);
         }
     }
+
+    async changeLayouts(value: Todo[]) {
+        const result = await timeoutFetch(`${baseUri}/todo/layouts`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ todoCollection: value }),
+        });
+
+        if (!isOk(result)) {
+            throw new Error(`Todo の配置の更新に失敗しました`);
+        }
+    }
 }
