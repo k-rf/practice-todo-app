@@ -16,7 +16,10 @@
         "kavod-io.vscode-jest-test-adapter",
         "mhutchie.git-graph",
         "ms-azuretools.vscode-docker",
+        "mtxr.sqltools-driver-pg",
+        "mtxr.sqltools",
         "mutantdino.resourcemonitor",
+        "prisma.prisma",
         "streetsidesoftware.code-spell-checker"
     ],
     "settings": {
@@ -28,6 +31,29 @@
         },
         "[javascript]": {
             "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[json]": {
+            "editor.defaultFormatter": "esbenp.prettier-vscode",
+            "editor.quickSuggestions": {
+                "strings": true
+            },
+            "editor.suggest.insertMode": "replace",
+            "gitlens.codeLens.scopes": [
+                "document"
+            ]
+        },
+        "[jsonc]": {
+            "editor.defaultFormatter": "esbenp.prettier-vscode",
+            "editor.quickSuggestions": {
+                "strings": true
+            },
+            "editor.suggest.insertMode": "replace",
+            "gitlens.codeLens.scopes": [
+                "document"
+            ]
+        },
+        "[prisma]": {
+            "editor.defaultFormatter": "Prisma.prisma"
         }
     }
 }

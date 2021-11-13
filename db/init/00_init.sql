@@ -1,0 +1,8 @@
+CREATE ROLE "todo" LOGIN PASSWORD 'P@ssw0rd' CREATEDB;
+CREATE DATABASE "todo";
+
+SET timezone TO 'UTC';
+
+CREATE EXTENSION "uuid-ossp";
+
+GRANT CREATE ON DATABASE todo TO todo;

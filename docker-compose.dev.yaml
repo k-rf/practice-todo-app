@@ -13,6 +13,8 @@ volumes:
     app-vscode_extensions:
     app-node_modules:
 
+    db-volume:
+
 services:
     web:
         build:
@@ -60,6 +62,8 @@ services:
         entrypoint: yarn
         command: start:dev
         tty: true
+        depends_on:
+            - db
         networks:
             - todo
         volumes:
@@ -75,3 +79,22 @@ services:
             - type: volume
               source: app-vscode_extensions
               target: /home/app/.vscode-server/extensions
+
+    db:
+        build:
+            context: ./db
+        container_name: todo-app-db
+        ports:
+            - 5432:5432
+        environment:
+            - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+        tty: true
+        networks:
+            - todo
+        volumes:
+            - type: bind
+              source: ./db/init
+              target: /docker-entrypoint-initdb.d
+            - type: volume
+              source: db-volume
+              target: /var/lib/postgresql/data
