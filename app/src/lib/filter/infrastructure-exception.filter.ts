@@ -1,6 +1,6 @@
 import { ArgumentsHost, Catch, ExceptionFilter } from "@nestjs/common";
 import { Request, Response } from "express";
-import { InfrastructureException } from "exception/infrastructure.exception";
+import { InfrastructureException } from "lib/exception/infrastructure.exception";
 
 @Catch(InfrastructureException)
 export class InfrastructureExceptionFilter implements ExceptionFilter {

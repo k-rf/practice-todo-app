@@ -1,4 +1,4 @@
-import { DomainException } from "exception/domain.exception";
+import { DomainException } from "lib/exception/domain.exception";
 
 const brand = Symbol();
 export class TodoTitle {

@@ -1,5 +1,6 @@
 import { INestApplication } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
+import { PrismaService } from "lib/prisma/prisma.service";
 import * as request from "supertest";
 import { ChangeTodoLayoutsDto } from "todo/dto/change-todo-layouts.dto";
 import { TodoDto } from "todo/dto/todo.output.dto";
@@ -14,7 +15,7 @@ import { TodoRectY } from "todo/entities/todo-rect/todo-rect-y";
 import { TODO_STATUS } from "todo/entities/todo-status";
 import { TodoTitle } from "todo/entities/todo-title";
 import { Todo } from "todo/entities/todo.entity";
-import { TodoInMemoryRepository } from "todo/repository/in-memory/todo-in-memory-repository";
+import { TodoPrismaRepository } from "todo/repository/prisma/todo-prisma-repository";
 import { TodoModule } from "todo/todo.module";
 import { DateGenerator } from "utils/date-generator";
 import { UUID } from "utils/uuid";
@@ -47,26 +48,30 @@ const testCreateTodoDto = {
 
 describe("TodoController (e2e)", () => {
     let app: INestApplication;
+    let prismaService: PrismaService;
     let uuidGenerator: UUIDGenerator;
-    let dateGenerator: DateGenerator;
-    let repository: TodoInMemoryRepository;
+    let repository: TodoPrismaRepository;
 
     beforeEach(async () => {
         const moduleFixture: TestingModule = await Test.createTestingModule({
             imports: [TodoModule],
         }).compile();
 
-        uuidGenerator = moduleFixture.get<UUIDGenerator>(UUIDGenerator);
-        dateGenerator = moduleFixture.get<DateGenerator>(DateGenerator);
-        repository = moduleFixture.get<TodoInMemoryRepository>(
-            TodoInMemoryRepository,
-        );
+        prismaService = moduleFixture.get(PrismaService);
+        uuidGenerator = moduleFixture.get(UUIDGenerator);
+        repository = moduleFixture.get(TodoPrismaRepository);
 
         app = moduleFixture.createNestApplication();
         await app.init();
+
+        await prismaService.cleanUp();
     });
 
     describe("TODO を作成する (POST /todo)", () => {
+        beforeEach(async () => {
+            await prismaService.cleanUp();
+        });
+
         it("正常な値を与える", () => {
             const title = "abc";
             const description = "xyz";
@@ -95,7 +100,7 @@ describe("TodoController (e2e)", () => {
                         String(uuidGenerator.lastGenerated()),
                     );
                 })
-                .expect(() => {
+                .expect(async () => {
                     const todo = Todo.of({
                         id: new TodoId(uuidGenerator.lastGenerated()),
                         title: new TodoTitle(title),
@@ -108,7 +113,9 @@ describe("TodoController (e2e)", () => {
                             h: new TodoRectH(h),
                         }),
                     });
-                    expect(repository.value[0]).toEqual(todo);
+                    await expect(repository.findOne(todo.id)).resolves.toEqual(
+                        todo,
+                    );
                 });
         });
 
@@ -155,6 +162,10 @@ describe("TodoController (e2e)", () => {
     });
 
     describe("TODO を削除する (DELETE /todo/:id)", () => {
+        beforeEach(async () => {
+            await prismaService.cleanUp();
+        });
+
         it("正常な値を与える", async () => {
             const dto = testCreateTodoDto.of();
 
@@ -166,8 +177,8 @@ describe("TodoController (e2e)", () => {
             return request(app.getHttpServer())
                 .delete(`/todo/${String(id)}`)
                 .expect(200)
-                .expect(() => {
-                    expect(repository.value.length).toEqual(0);
+                .expect(async () => {
+                    await expect(repository.count()).resolves.toEqual(0);
                 });
         });
 
@@ -182,7 +193,11 @@ describe("TodoController (e2e)", () => {
         });
     });
 
-    describe("TODO をステータスを更新する (PUT /todo/:id/status", () => {
+    describe("TODO をステータスを更新する (PUT /todo/:id/status)", () => {
+        beforeEach(async () => {
+            await prismaService.cleanUp();
+        });
+
         describe("正常な値を与える", () => {
             let id: string;
             beforeEach(async () => {
@@ -203,12 +218,13 @@ describe("TodoController (e2e)", () => {
                     .put(`/todo/${String(id)}/status`)
                     .send(dto)
                     .expect(200)
-                    .expect(() => {
-                        const todo = repository.value[0];
+                    .expect(async () => {
+                        const todo = await repository.findOne(new TodoId(id));
+                        // Todo: FE から完了日を渡すようにする
+                        // expect(todo.completedAt).toEqual(
+                        //     dateGenerator.lastGenerated(),
+                        // );
                         expect(todo.status).toEqual(TODO_STATUS.DONE);
-                        expect(todo.completedAt).toEqual(
-                            dateGenerator.lastGenerated(),
-                        );
                     });
             });
 
@@ -221,8 +237,8 @@ describe("TodoController (e2e)", () => {
                     .put(`/todo/${String(id)}/status`)
                     .send(dto)
                     .expect(200)
-                    .expect(() => {
-                        const todo = repository.value[0];
+                    .expect(async () => {
+                        const todo = await repository.findOne(new TodoId(id));
                         expect(todo.status).toEqual(TODO_STATUS.PENDING);
                         expect(todo.completedAt).toBeUndefined();
                     });
@@ -248,6 +264,8 @@ describe("TodoController (e2e)", () => {
         let todoCollection: Todo[];
 
         beforeEach(async () => {
+            await prismaService.cleanUp();
+
             todoCollection = [
                 Todo.of({
                     rect: TodoRect.of({
@@ -312,8 +330,10 @@ describe("TodoController (e2e)", () => {
                     .put(`/todo/layouts`)
                     .send(dto)
                     .expect(200)
-                    .expect(() => {
-                        expect(repository.value).toStrictEqual(expected);
+                    .expect(async () => {
+                        await expect(
+                            repository.findAll(),
+                        ).resolves.toStrictEqual(expected);
                     });
             });
         });

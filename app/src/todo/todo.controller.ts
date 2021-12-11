@@ -12,10 +12,10 @@ import {
     UsePipes,
     ValidationPipe,
 } from "@nestjs/common";
-import { InfrastructureException } from "exception/infrastructure.exception";
+import { InfrastructureException } from "lib/exception/infrastructure.exception";
 import { Response } from "express";
-import { DomainExceptionFilter } from "filter/domain-exception.filter";
-import { InfrastructureExceptionFilter } from "filter/infrastructure-exception.filter";
+import { DomainExceptionFilter } from "lib/filter/domain-exception.filter";
+import { InfrastructureExceptionFilter } from "lib/filter/infrastructure-exception.filter";
 import { ParseUUIDPipe } from "utils/parse-uuid.pipe";
 import { UUID } from "utils/uuid";
 import { ChangeTodoLayoutsDto } from "./dto/change-todo-layouts.dto";
