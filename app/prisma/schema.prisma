@@ -12,22 +12,21 @@ datasource db {
 }
 
 model Todo {
-  id           String     @id @db.Uuid
-  title        String
-  description  String?
-  status       TodoStatus @relation(fields: [todoStatusId], references: [id])
-  todoStatusId String     @db.Uuid
-  createdAt    DateTime   @db.Timestamptz
-  due          DateTime?  @db.Timestamptz
-  completedAt  DateTime?  @db.Timestamptz
-  x            Int
-  y            Int
-  w            Int
-  h            Int
+  id             String     @id @db.Uuid
+  title          String
+  description    String?
+  status         TodoStatus @relation(fields: [todoStatusName], references: [name])
+  todoStatusName String
+  createdAt      DateTime   @db.Timestamptz
+  due            DateTime?  @db.Timestamptz
+  completedAt    DateTime?  @db.Timestamptz
+  x              Int
+  y              Int
+  w              Int
+  h              Int
 }
 
 model TodoStatus {
-  id    String @id @default(uuid()) @db.Uuid
-  name  String
+  name  String @id
   todos Todo[]
 }
