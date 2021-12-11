@@ -18,12 +18,12 @@ import { TodoRectX } from "./entities/todo-rect/todo-rect-x";
 import { TodoRectY } from "./entities/todo-rect/todo-rect-y";
 import { TodoTitle } from "./entities/todo-title";
 import { Todo } from "./entities/todo.entity";
-import { TodoInMemoryRepository } from "./repository/in-memory/todo-in-memory-repository";
+import { TodoPrismaRepository } from "./repository/prisma/todo-prisma-repository";
 
 @Injectable()
 export class TodoService {
     constructor(
-        private readonly repository: TodoInMemoryRepository,
+        private readonly repository: TodoPrismaRepository,
         private readonly uuidGenerator: UUIDGenerator,
         private readonly dateGenerator: DateGenerator,
     ) {}
@@ -106,8 +106,8 @@ export class TodoService {
         );
     }
 
-    findAll() {
-        return this.repository.value.map((todo) =>
+    async findAll() {
+        return (await this.repository.findAll()).map((todo) =>
             TodoDto.of({
                 id: String(todo.id),
                 title: String(todo.title),

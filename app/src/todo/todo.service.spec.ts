@@ -18,6 +18,7 @@ import { TODO_STATUS } from "./entities/todo-status";
 import { TodoTitle } from "./entities/todo-title";
 import { Todo } from "./entities/todo.entity";
 import { TodoInMemoryRepository } from "./repository/in-memory/todo-in-memory-repository";
+import { TodoPrismaRepository } from "./repository/prisma/todo-prisma-repository";
 import { TodoService } from "./todo.service";
 
 describe("TodoService", () => {
@@ -29,13 +30,19 @@ describe("TodoService", () => {
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
             imports: [UtilsModule],
-            providers: [TodoService, TodoInMemoryRepository],
+            providers: [
+                TodoService,
+                {
+                    provide: TodoPrismaRepository,
+                    useValue: new TodoInMemoryRepository(),
+                },
+            ],
         }).compile();
 
-        service = module.get<TodoService>(TodoService);
-        uuidGenerator = module.get<UUIDGenerator>(UUIDGenerator);
-        dateGenerator = module.get<DateGenerator>(DateGenerator);
-        repository = module.get<TodoInMemoryRepository>(TodoInMemoryRepository);
+        service = module.get(TodoService);
+        uuidGenerator = module.get(UUIDGenerator);
+        dateGenerator = module.get(DateGenerator);
+        repository = module.get(TodoPrismaRepository);
     });
 
     it("should be defined", () => {
@@ -175,11 +182,13 @@ describe("TodoService", () => {
                 todoCollection: [
                     TodoDto.of({
                         id: String(todoCollection[0].id),
+                        createdAt: todoCollection[0].createdAt,
                         x: 4,
                         y: 0,
                     }),
                     TodoDto.of({
                         id: String(todoCollection[1].id),
+                        createdAt: todoCollection[1].createdAt,
                         x: 3,
                         y: 2,
                     }),
